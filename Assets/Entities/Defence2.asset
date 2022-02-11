@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be6109c7556140649a5748c029db15e2, type: 3}
+  m_Name: Defence2
+  m_EditorClassIdentifier: 
+  image: {fileID: 7875520042970248079, guid: db8aa40ed7a168f40b510a5c0993d7ef, type: 3}
+  attackerName: Deneme
+  damage: 456
+  attackerType: 1
+  reloadTime: 4564
+  range: 4564
