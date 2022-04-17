@@ -7,7 +7,8 @@ using System.IO;
 public class MapGeneratorController : MonoBehaviour
 {
 
-    [SerializeField] TMP_InputField size;
+    [SerializeField] Slider size;
+    [SerializeField] TMP_Text sizeText;
     [SerializeField] TMP_InputField offsetX;
     [SerializeField] TMP_InputField offsetY;
     [SerializeField] Slider fallOffRate;
@@ -19,23 +20,11 @@ public class MapGeneratorController : MonoBehaviour
     [SerializeField] GameObject[] EditorUI;
     void Start()
     {
-        if (size.text != "")
-        {
-            FindObjectOfType<MapGenerator>().DrawMapInEditor();
-        }
+        FindObjectOfType<MapGenerator>().DrawMapInEditor();
     }
-    
     public void UpdateMap()
     {
-        int iSize = Int32.Parse(size.text);
-        if (iSize > 600)
-        {
-            size.text = "600";
-        }
-        else if (iSize < 50)
-        {
-            size.text = "50";
-        }
+        sizeText.text = (size.value * 200).ToString() ;
         FindObjectOfType<MapGenerator>().DrawMapInEditor();
     }
 
@@ -87,7 +76,7 @@ public class MapGeneratorController : MonoBehaviour
                 return;
             }
             
-            PlayerPrefs.SetInt("size", Int32.Parse(size.text));
+            PlayerPrefs.SetInt("size", (int)size.value);
             PlayerPrefs.SetFloat("offsetX", float.Parse(offsetX.text));
             PlayerPrefs.SetFloat("offsetY", float.Parse(offsetY.text));
             PlayerPrefs.SetString("mapName", mapName.text);

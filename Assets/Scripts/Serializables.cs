@@ -21,7 +21,7 @@ public class Serializables : MonoBehaviour
 
     [System.Serializable]
     public struct UIInputs{
-        public TMP_InputField size;
+        public Slider size;
         public TMP_InputField seed;
         public TMP_InputField offsetX;
         public TMP_InputField offsetY;

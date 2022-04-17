@@ -1,19 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-
 
 public class MapGenerator : MonoBehaviour
 {
-    [SerializeField] bool autoUpdate;
     [SerializeField] Serializables.UIInputs uiInputs;
     [SerializeField] Serializables.MapArgs mapArguments;
-    [SerializeField] Image miniMap;
     [SerializeField] Noise.NormalizeMode normalizeMode;
     float[,] fallOffMap;
     float[,] heightMap;
@@ -39,12 +33,13 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
-
+    
     public void DrawColorMap(MapData[] mapData, MapDisplay display)
     {
+        int mapSize = (int) uiInputs.size.value * 200;
         for (int i = 0; i < mapData.Length; i++)
         {
-            display.DrawTexture(TextureGenerator.TextureFromColorMap(mapData[i].colorMap, Int32.Parse(uiInputs.size.text), Int32.Parse(uiInputs.size.text)), map[i]);
+            display.DrawTexture(TextureGenerator.TextureFromColorMap(mapData[i].colorMap, mapSize / 10, mapSize / 10), map[i]);
         }
     }
 
@@ -55,6 +50,7 @@ public class MapGenerator : MonoBehaviour
 
     public void DrawMeshMap(MapData mapData, MapDisplay display)
     {
+        int mapSize = (int) uiInputs.size.value * 200;
         int rows = mapData.heightMap.GetLength(0);
         int cols = mapData.heightMap.GetLength(1);
 
@@ -78,8 +74,8 @@ public class MapGenerator : MonoBehaviour
             ), 
             TextureGenerator.TextureFromColorMap(
                 flippedColorMap, 
-                Int32.Parse(uiInputs.size.text), 
-                Int32.Parse(uiInputs.size.text)
+                mapSize, 
+                mapSize
             )
         );
     }
@@ -118,49 +114,61 @@ public class MapGenerator : MonoBehaviour
         {
             SetFallOffMap();
         }
-
-        int size = Int32.Parse(uiInputs.size.text);
-
+        
+        int mapSize = (int) uiInputs.size.value * 200;
+        
         Vector2 offset = new Vector2(float.Parse(uiInputs.offsetX.text), float.Parse(uiInputs.offsetY.text));
 
         Vector2[] indexOffsets = new Vector2[100];
 
         int index = 0;
-        for (int i = 0; i < size - size / 10; i += size / 10)
+        for (int i = -5; i < 5; i++)
         {
-            for (int j = 0; j < size - size / 10; j += size / 10)
+            for (int j = -5; j < 5; j++)
             {
-                indexOffsets[index] = new Vector2(size * i + size / 10, size * j + size / 10);
+                indexOffsets[index] = new Vector2((mapSize / 10) * i, (mapSize / 10) * j);
                 index++;
             }
         }
 
         List<Task<Tuple<int, MapData>>> tasks = new List<Task<Tuple<int, MapData>>>(100);
         MapData[] mapDatas = new MapData[100];
+
+        int[] mapIndexes = new int[100];
+        index = 0;
+        for (int i = 1; i <= 10; i++)
+        {
+            for (int j = 1; j <= 10; j++)
+            {
+                mapIndexes[index] = 10 * i - j;
+                index++;
+            }
+        }
         
-        for (int i = 0; i < 10; i += 10)
+        for (int i = 0; i < 100; i += 1)
         {
             int i1 = i;
-            Task<Tuple<int, MapData>> task0 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 9, size, center, offset, indexOffsets[i1 + 9]));
+            Task<Tuple<int, MapData>> task0 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(mapIndexes[i1], mapSize, center, offset, indexOffsets[99 - i1]));
             tasks.Add(task0);
-            Task<Tuple<int, MapData>> task1 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 8, size, center, offset, indexOffsets[i1 + 8]));
+
+            /*Task<Tuple<int, MapData>> task1 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 1, size, center, offset, indexOffsets[i1 + 1]));
             tasks.Add(task1);
-            Task<Tuple<int, MapData>> task2 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 7, size, center, offset, indexOffsets[i1 + 7]));
+            Task<Tuple<int, MapData>> task2 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 2, size, center, offset, indexOffsets[i1 + 2]));
             tasks.Add(task2);
-            Task<Tuple<int, MapData>> task3 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 6, size, center, offset, indexOffsets[i1 + 6]));
+            Task<Tuple<int, MapData>> task3 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 3, size, center, offset, indexOffsets[i1 + 3]));
             tasks.Add(task3);
-            Task<Tuple<int, MapData>> task4 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 5, size, center, offset, indexOffsets[i1 + 5]));
+            Task<Tuple<int, MapData>> task4 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 4, size, center, offset, indexOffsets[i1 + 4]));
             tasks.Add(task4);
-            Task<Tuple<int, MapData>> task5 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 4, size, center, offset, indexOffsets[i1 + 4]));
+            Task<Tuple<int, MapData>> task5 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 5, size, center, offset, indexOffsets[i1 + 5]));
             tasks.Add(task5);
-            Task<Tuple<int, MapData>> task6 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 3, size, center, offset, indexOffsets[i1 + 3]));
+            Task<Tuple<int, MapData>> task6 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 6, size, center, offset, indexOffsets[i1 + 6]));
             tasks.Add(task6);
-            Task<Tuple<int, MapData>> task7 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 2, size, center, offset, indexOffsets[i1 + 2]));
+            Task<Tuple<int, MapData>> task7 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 7, size, center, offset, indexOffsets[i1 + 7]));
             tasks.Add(task7);
-            Task<Tuple<int, MapData>> task8 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 1, size, center, offset, indexOffsets[i1 + 1]));
+            Task<Tuple<int, MapData>> task8 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 8, size, center, offset, indexOffsets[i1 + 8]));
             tasks.Add(task8);
-            Task<Tuple<int, MapData>> task9 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 0, size, center, offset, indexOffsets[i1 + 0]));
-            tasks.Add(task9);
+            Task<Tuple<int, MapData>> task9 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 9, size, center, offset, indexOffsets[i1 + 9]));
+            tasks.Add(task9);*/
         }
 
         Task.WaitAll(tasks.ToArray());
@@ -217,20 +225,21 @@ public class MapGenerator : MonoBehaviour
 
     public void SetFallOffMap()
     {
+        int mapSize = (int) uiInputs.size.value;
         if (uiInputs.useFallOff){
             if (uiInputs.useFallOff.isOn)
             {
                 if (uiInputs.fallOffType.value == 0)
                 {
-                    fallOffMap = FallOffGenerator.GenerateIsland(Int32.Parse(uiInputs.size.text), uiInputs.fallOffRate.value);
+                    fallOffMap = FallOffGenerator.GenerateIsland(mapSize, uiInputs.fallOffRate.value);
                 }
                 else if (uiInputs.fallOffType.value == 1)
                 {
-                    fallOffMap = FallOffGenerator.GenerateCoast(Int32.Parse(uiInputs.size.text), uiInputs.fallOffRate.value, (Serializables.FallOffDirection)uiInputs.fallOffDirection.value);
+                    fallOffMap = FallOffGenerator.GenerateCoast(mapSize, uiInputs.fallOffRate.value, (Serializables.FallOffDirection)uiInputs.fallOffDirection.value);
                 }
                 else if (uiInputs.fallOffType.value == 2)
                 {
-                    fallOffMap = FallOffGenerator.GenerateLake(Int32.Parse(uiInputs.size.text), uiInputs.fallOffRate.value);
+                    fallOffMap = FallOffGenerator.GenerateLake(mapSize, uiInputs.fallOffRate.value);
                 }
             }
         }
