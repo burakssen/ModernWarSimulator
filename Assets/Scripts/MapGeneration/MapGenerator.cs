@@ -9,13 +9,14 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] Serializables.UIInputs uiInputs;
     [SerializeField] Serializables.MapArgs mapArguments;
     [SerializeField] Noise.NormalizeMode normalizeMode;
-    float[,] fallOffMap;
-    float[,] heightMap;
+    [SerializeField] private List<float[,]> fallOffMap;
     [SerializeField] private Image image;
     [SerializeField] private GameObject imageParent;
     private Image[] map;
+    private MapData[] currentMapData;
     void Awake()
     {
+        fallOffMap = new List<float[,]>(100);
         SetFallOffMap();
     }
 
@@ -43,11 +44,21 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public void DrawFallOffMap(MapData mapData, MapDisplay display)
+    public MapData[] GetMapData()
     {
-        //display.DrawTexture(TextureGenerator.TextureFromFallOffMap(FallOffGenerator.GenerateCoast(Int32.Parse(uiInputs.size.text), uiInputs.fallOffRate.value, (Serializables.FallOffDirection)uiInputs.fallOffDirection.value)));
+        return currentMapData;
     }
+    public void DrawFallOffMap(MapData[] mapDatas, MapDisplay display)
+    {
+        int mapSize = (int) uiInputs.size.value * 200;
+        fallOffMap = FallOffGenerator.GenerateIsland(mapSize, uiInputs.fallOffRate.value);
 
+        for (int i = 0; i < mapDatas.Length; i++)
+        {
+            display.DrawTexture(TextureGenerator.TextureFromFallOffMap(fallOffMap[i]), map[i]);
+        }
+    }
+    
     public void DrawMeshMap(MapData mapData, MapDisplay display)
     {
         int mapSize = (int) uiInputs.size.value * 200;
@@ -79,19 +90,10 @@ public class MapGenerator : MonoBehaviour
             )
         );
     }
-
-    public float [,] GetHeightMap(){
-        return heightMap;
-    }
-
-
-    public void SetHeightMap(MapData mapData){
-        heightMap = mapData.heightMap;
-    }
-
     public void DrawMapInEditor()
     {
         MapData[] mapData = GenerateMapData(Vector2.zero);
+        currentMapData = mapData;
         MapDisplay display = FindObjectOfType<MapDisplay>();
 
         if (mapArguments.drawMode == Serializables.DrawMode.ColorMap)
@@ -104,7 +106,7 @@ public class MapGenerator : MonoBehaviour
         }
         else if (mapArguments.drawMode == Serializables.DrawMode.FallOff)
         {
-            //DrawFallOffMap(mapData, display);
+            DrawFallOffMap(mapData, display);
         }
     }
 
@@ -150,25 +152,6 @@ public class MapGenerator : MonoBehaviour
             int i1 = i;
             Task<Tuple<int, MapData>> task0 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(mapIndexes[i1], mapSize, center, offset, indexOffsets[99 - i1]));
             tasks.Add(task0);
-
-            /*Task<Tuple<int, MapData>> task1 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 1, size, center, offset, indexOffsets[i1 + 1]));
-            tasks.Add(task1);
-            Task<Tuple<int, MapData>> task2 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 2, size, center, offset, indexOffsets[i1 + 2]));
-            tasks.Add(task2);
-            Task<Tuple<int, MapData>> task3 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 3, size, center, offset, indexOffsets[i1 + 3]));
-            tasks.Add(task3);
-            Task<Tuple<int, MapData>> task4 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 4, size, center, offset, indexOffsets[i1 + 4]));
-            tasks.Add(task4);
-            Task<Tuple<int, MapData>> task5 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 5, size, center, offset, indexOffsets[i1 + 5]));
-            tasks.Add(task5);
-            Task<Tuple<int, MapData>> task6 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 6, size, center, offset, indexOffsets[i1 + 6]));
-            tasks.Add(task6);
-            Task<Tuple<int, MapData>> task7 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 7, size, center, offset, indexOffsets[i1 + 7]));
-            tasks.Add(task7);
-            Task<Tuple<int, MapData>> task8 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 8, size, center, offset, indexOffsets[i1 + 8]));
-            tasks.Add(task8);
-            Task<Tuple<int, MapData>> task9 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(i1 + 9, size, center, offset, indexOffsets[i1 + 9]));
-            tasks.Add(task9);*/
         }
 
         Task.WaitAll(tasks.ToArray());
@@ -203,7 +186,8 @@ public class MapGenerator : MonoBehaviour
             {
                 if (uiInputs.useFallOff.isOn)
                 {
-                    noiseMap[x, y] = Mathf.Clamp01(noiseMap[x, y] - fallOffMap[x, y]);
+                    //Debug.Log("X: "+x+", Y: "+y+", index: " + index);
+                    noiseMap[x, y] = Mathf.Clamp01(noiseMap[x, y] - fallOffMap[index][x, y]);
                 }
                 float currentHeight = noiseMap[x, y];
                 for (int i = 0; i < mapArguments.regions.Length; i++)
@@ -225,21 +209,22 @@ public class MapGenerator : MonoBehaviour
 
     public void SetFallOffMap()
     {
-        int mapSize = (int) uiInputs.size.value;
+        int mapSize = (int) uiInputs.size.value * 200;
         if (uiInputs.useFallOff){
             if (uiInputs.useFallOff.isOn)
             {
                 if (uiInputs.fallOffType.value == 0)
                 {
                     fallOffMap = FallOffGenerator.GenerateIsland(mapSize, uiInputs.fallOffRate.value);
+                    int a = 3;
                 }
                 else if (uiInputs.fallOffType.value == 1)
                 {
-                    fallOffMap = FallOffGenerator.GenerateCoast(mapSize, uiInputs.fallOffRate.value, (Serializables.FallOffDirection)uiInputs.fallOffDirection.value);
+                    //fallOffMap = FallOffGenerator.GenerateCoast(mapSize, uiInputs.fallOffRate.value, (Serializables.FallOffDirection)uiInputs.fallOffDirection.value);
                 }
                 else if (uiInputs.fallOffType.value == 2)
                 {
-                    fallOffMap = FallOffGenerator.GenerateLake(mapSize, uiInputs.fallOffRate.value);
+                    //fallOffMap = FallOffGenerator.GenerateLake(mapSize, uiInputs.fallOffRate.value);
                 }
             }
         }

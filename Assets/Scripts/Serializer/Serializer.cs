@@ -1,13 +1,39 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine;
 
-[Serializable]
-public class MapSerilization
+[DataContract]
+public class MapSerializer : Serializer
 {
-    public Guid guid;
-    public String mapName;
-    public float[,] mapData;
+    [DataMember] public string mapName;
+    [DataMember] public List<MapData> mapDatas;
+    [DataMember] public List<AttackerSerializer> attackers;
+
+    public MapSerializer(string mapName, List<MapData> mapDatas, List<AttackerSerializer> attackers)
+    {
+        this.mapName = mapName;
+        this.mapDatas = mapDatas;
+        this.attackers = attackers;
+    }
+
+    public static void Serialize(string path)
+    {
+        
+    }
+
+    public static MapSerializer Deserialize(string path)
+    {
+        return null;
+    }
+}
+
+[DataContract]
+public class AttackerSerializer
+{
+    [DataMember] public Tuple<Vector2, AttackerSelection.AttackerType, string> wave;
 }
 
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -44,7 +45,7 @@ public class MapGeneratorController : MonoBehaviour
 
     public void UpdateFallOff()
     {
-        fallOffRateText.text = (fallOffRate.value * 1.5).ToString("F2");
+        fallOffRateText.text = (fallOffRate.value).ToString("F2");
         FindObjectOfType<MapGenerator>().DrawMapInEditor();
     }
 
@@ -83,27 +84,12 @@ public class MapGeneratorController : MonoBehaviour
             PlayerPrefs.SetFloat("fallOffRate", fallOffRate.value);
             PlayerPrefs.SetInt("seed", Int32.Parse(seed.text));
             
-            /*
-            float [,] heightMap = FindObjectOfType<MapGenerator>().GetHeightMap();
-
-            MapSerilization mapObject = new MapSerilization();
-
-            mapObject.guid = Guid.NewGuid();
-            mapObject.mapData = heightMap;
-            mapObject.mapName = mapName.text;
-
-            string binary = Serializer.SerializeToString(mapObject);
-
-            File.WriteAllText("./Assets/Maps/" + mapName.text, binary);
-            */
-            
             ChangeUIType();
         }
         else
         {
             notification.text = "Unknown Error occured";
             Invoke("ClearNotification", 3);
-            return;
         }
 
     }
@@ -126,6 +112,21 @@ public class MapGeneratorController : MonoBehaviour
                 {
                     editorGameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(600f, editorGameObject.GetComponent<RectTransform>().sizeDelta.y);
                 }
+            }
+        }
+    }
+
+    public void Serialize()
+    {
+        List<Wave> waves = FindObjectOfType<DisplayAttacker>().GetWaves();
+        MapData[] mapDatas = FindObjectOfType<MapGenerator>().GetMapData();
+
+        foreach (var wave in waves)
+        {
+            Debug.Log(wave.waveNumber);
+            foreach (var w in wave.list)
+            {
+                Debug.Log(w.Item1.name + ", " + w.Item2.transform.GetChild(2).gameObject.GetComponent<TMP_InputField>().text);
             }
         }
     }
