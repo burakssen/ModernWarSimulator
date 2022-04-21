@@ -120,9 +120,12 @@ public class MapGeneratorController : MonoBehaviour
     {
         List<Wave> waves = FindObjectOfType<DisplayAttacker>().GetWaves();
         MapData[] mapDatas = FindObjectOfType<MapGenerator>().GetMapData();
-
+        
         foreach (var wave in waves)
         {
+
+            // FIX ME: burdasın
+            //Serializer.SerializeToString();
             Debug.Log(wave.waveNumber);
             foreach (var w in wave.list)
             {

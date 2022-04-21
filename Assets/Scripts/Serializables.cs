@@ -10,6 +10,12 @@ public class Serializables : MonoBehaviour
 
     public enum FallOffDirection { X, Y };
 
+    public enum FallOffType
+    {
+        Island,
+        Coast,
+        Lake
+    }
 
     [System.Serializable]
     public struct TerrainType

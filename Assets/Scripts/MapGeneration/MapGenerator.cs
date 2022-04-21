@@ -51,7 +51,7 @@ public class MapGenerator : MonoBehaviour
     public void DrawFallOffMap(MapData[] mapDatas, MapDisplay display)
     {
         int mapSize = (int) uiInputs.size.value * 200;
-        fallOffMap = FallOffGenerator.GenerateIsland(mapSize, uiInputs.fallOffRate.value);
+        fallOffMap = FallOffGenerator.GenerateFallOff(mapSize, uiInputs.fallOffRate.value, Serializables.FallOffType.Island);
 
         for (int i = 0; i < mapDatas.Length; i++)
         {
@@ -213,19 +213,12 @@ public class MapGenerator : MonoBehaviour
         if (uiInputs.useFallOff){
             if (uiInputs.useFallOff.isOn)
             {
-                if (uiInputs.fallOffType.value == 0)
-                {
-                    fallOffMap = FallOffGenerator.GenerateIsland(mapSize, uiInputs.fallOffRate.value);
-                    int a = 3;
-                }
-                else if (uiInputs.fallOffType.value == 1)
-                {
-                    //fallOffMap = FallOffGenerator.GenerateCoast(mapSize, uiInputs.fallOffRate.value, (Serializables.FallOffDirection)uiInputs.fallOffDirection.value);
-                }
-                else if (uiInputs.fallOffType.value == 2)
-                {
-                    //fallOffMap = FallOffGenerator.GenerateLake(mapSize, uiInputs.fallOffRate.value);
-                }
+                fallOffMap = FallOffGenerator.GenerateFallOff(
+                    mapSize, 
+                    uiInputs.fallOffRate.value, 
+                    (Serializables.FallOffType)uiInputs.fallOffType.value, 
+                    (Serializables.FallOffDirection)uiInputs.fallOffDirection.value
+                    );
             }
         }
     }
