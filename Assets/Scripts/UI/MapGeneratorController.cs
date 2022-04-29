@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.IO;
+using System.Linq;
+using Application = UnityEngine.Device.Application;
 
 public class MapGeneratorController : MonoBehaviour
 {
@@ -118,19 +120,40 @@ public class MapGeneratorController : MonoBehaviour
 
     public void Serialize()
     {
-        List<Wave> waves = FindObjectOfType<DisplayAttacker>().GetWaves();
-        MapData[] mapDatas = FindObjectOfType<MapGenerator>().GetMapData();
+        List<Wave> waveValues = FindObjectOfType<DisplayAttacker>().GetWaves();
         
-        foreach (var wave in waves)
-        {
+        List<WaveSerializer> waves = new List<WaveSerializer>();
 
-            // FIX ME: burdasın
-            //Serializer.SerializeToString();
-            Debug.Log(wave.waveNumber);
+        Serializables.UIInputs uiInputs = FindObjectOfType<MapGenerator>().GetUIInputs();
+
+        foreach (var wave in waveValues)
+        {
+            WaveSerializer newWave = new WaveSerializer();
+            newWave.waveNumber = wave.waveNumber;
+            newWave.list = new List<Tuple<string, int>>();
+            
             foreach (var w in wave.list)
             {
-                Debug.Log(w.Item1.name + ", " + w.Item2.transform.GetChild(2).gameObject.GetComponent<TMP_InputField>().text);
+                newWave.list.Add(new Tuple<string, int>(w.Item1.attackerName, Int32.Parse(w.Item2.transform.GetChild(2).gameObject.GetComponent<TMP_InputField>().text)));
             }
+
+            waves.Add(newWave);
         }
+        
+        MapInfoSerializer mapInfoSerializer = new MapInfoSerializer();
+        mapInfoSerializer.mapName = mapName.text;
+        mapInfoSerializer.seed = Int32.Parse(uiInputs.seed.text);
+        mapInfoSerializer.size = (int) uiInputs.size.value * 200;
+        mapInfoSerializer.fallOffDirection = (Serializables.FallOffDirection) uiInputs.fallOffDirection.value;
+        mapInfoSerializer.fallOffType = (Serializables.FallOffType) uiInputs.fallOffType.value;
+        mapInfoSerializer.fallOffRate = uiInputs.fallOffRate.value;
+        mapInfoSerializer.useFallOff = uiInputs.useFallOff.isOn;
+        mapInfoSerializer.offSetX = Int32.Parse(uiInputs.offsetX.text);
+        mapInfoSerializer.offSetY = Int32.Parse(uiInputs.offsetY.text);
+        mapInfoSerializer.waves = waves;
+        
+        MapSerializer mapSerializer = new MapSerializer();
+        mapSerializer.mapInfoSerializer = mapInfoSerializer;
+        mapSerializer.Serialize(Application.dataPath + "/Maps/");
     }
 }

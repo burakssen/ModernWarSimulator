@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -8,12 +9,23 @@ public class Serializables : MonoBehaviour
 {
     public enum DrawMode { ColorMap, Mesh, FallOff };
 
-    public enum FallOffDirection { X, Y };
+    [DataContract(Name = "FallOffDirection")]
+    public enum FallOffDirection 
+    { 
+        [EnumMember] 
+        X,
+        [EnumMember] 
+        Y 
+    };
 
+    [DataContract(Name = "FalloffType")]
     public enum FallOffType
     {
+        [EnumMember]
         Island,
+        [EnumMember]
         Coast,
+        [EnumMember]
         Lake
     }
 

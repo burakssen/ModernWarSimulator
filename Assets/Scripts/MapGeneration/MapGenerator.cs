@@ -9,19 +9,26 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] Serializables.UIInputs uiInputs;
     [SerializeField] Serializables.MapArgs mapArguments;
     [SerializeField] Noise.NormalizeMode normalizeMode;
-    [SerializeField] private List<float[,]> fallOffMap;
     [SerializeField] private Image image;
     [SerializeField] private GameObject imageParent;
+    [SerializeField] private bool isMapLoader = false;
     private Image[] map;
     private MapData[] currentMapData;
+    private List<float[,]> fallOffMap;
     void Awake()
     {
+        if (isMapLoader)
+            return;
+        
         fallOffMap = new List<float[,]>(100);
         SetFallOffMap();
     }
 
     void Start()
     {
+        if (isMapLoader)
+            return;
+        
         map = new Image[100];
         for (int i = 0; i < 10; i++)
         {
@@ -59,11 +66,26 @@ public class MapGenerator : MonoBehaviour
         }
     }
     
-    public void DrawMeshMap(MapData mapData, MapDisplay display)
+    public void DrawMeshMap(MapData[] mapData, MapDisplay display, MapInfoSerializer mapInfoSerializer, Serializables.MapArgs mapArgs, GameObject[] planes)
     {
-        int mapSize = (int) uiInputs.size.value * 200;
-        int rows = mapData.heightMap.GetLength(0);
-        int cols = mapData.heightMap.GetLength(1);
+        List<Task> tasks = new List<Task>();
+        
+        for (int i = 0; i < 100; i++)
+        {
+            int index = i;
+            Task task = Task.Factory.StartNew(() => DrawMeshMapParallel(mapData[index], display, mapInfoSerializer.size / 10, mapArgs, planes[index]));
+            tasks.Add(task);
+        }
+
+        Task.WaitAll(tasks.ToArray());
+    }
+
+    public void DrawMeshMapParallel(MapData mapData, MapDisplay display, int size, Serializables.MapArgs mapArgs, GameObject plane)
+    {
+        int mapSize = size;
+        float[,] heightMap = Global.To2DArray(mapData.heightMap, size, size);
+        int rows = heightMap.GetLength(0);
+        int cols = heightMap.GetLength(1);
 
         float[,] flippedHeightMap = new float[rows, cols];
         Color[] flippedColorMap = new Color[rows * cols];
@@ -71,25 +93,28 @@ public class MapGenerator : MonoBehaviour
         {
             for (int j = 0; j < cols; j++)
             {
-                flippedHeightMap[i, j] = mapData.heightMap[(rows - 1) - i, j];
+                flippedHeightMap[i, j] = heightMap[rows - i - 1, j];
                 flippedColorMap[i * cols + j] = mapData.colorMap[i * cols + (cols - 1) - j];
             }
         }
-
+        // Fixme -> You are here
         display.DrawMesh(
             MeshGenerator.GenerateTerrainMesh(
                 flippedHeightMap, 
-                mapArguments.meshHeightMultiplier, 
-                mapArguments.meshHeightCurve, 
-                mapArguments.editorPreivewLevelOfDetail
+                mapArgs.meshHeightMultiplier, 
+                mapArgs.meshHeightCurve, 
+                mapArgs.editorPreivewLevelOfDetail
             ), 
             TextureGenerator.TextureFromColorMap(
                 flippedColorMap, 
                 mapSize, 
                 mapSize
-            )
+            ),
+            plane.GetComponent<MeshRenderer>(),
+            plane.GetComponent<MeshFilter>()
         );
     }
+
     public void DrawMapInEditor()
     {
         MapData[] mapData = GenerateMapData(Vector2.zero);
@@ -102,27 +127,54 @@ public class MapGenerator : MonoBehaviour
         }
         else if (mapArguments.drawMode == Serializables.DrawMode.Mesh)
         {
-           // DrawMeshMap(mapData, display);
+            // DrawMeshMap(mapData, display);
         }
         else if (mapArguments.drawMode == Serializables.DrawMode.FallOff)
         {
             DrawFallOffMap(mapData, display);
         }
     }
+    
+    public MapData[] GenerateMapData(Vector2 center, MapInfoSerializer mapInfoSerializer = null, Serializables.MapArgs mArgs = default)
+    {
 
-    MapData[] GenerateMapData(Vector2 center){
-        
-        if (uiInputs.useFallOff.isOn)
+        int mapSize;
+        Vector2 offset;
+        int seed;
+        bool useFallOff = false;
+        Serializables.MapArgs mapArgs;
+
+        if (mapInfoSerializer == null)
         {
-            SetFallOffMap();
+            if (uiInputs.useFallOff.isOn)
+            {
+                SetFallOffMap();
+                useFallOff = true;
+            }
+            mapSize = (int) uiInputs.size.value * 200;
+            mapArgs = mapArguments;
+        
+            offset = new Vector2(float.Parse(uiInputs.offsetX.text), float.Parse(uiInputs.offsetY.text));
+            seed = Int32.Parse(uiInputs.seed.text);
         }
+        else
+        {
+            if (mapInfoSerializer.useFallOff)
+            {
+                SetFallOffMap(mapInfoSerializer);
+                useFallOff = true;
+            }
+
+            mapArgs = mArgs;
         
-        int mapSize = (int) uiInputs.size.value * 200;
+            mapSize = mapInfoSerializer.size;
         
-        Vector2 offset = new Vector2(float.Parse(uiInputs.offsetX.text), float.Parse(uiInputs.offsetY.text));
+            offset = new Vector2(mapInfoSerializer.offSetX, mapInfoSerializer.offSetY);
+            seed = mapInfoSerializer.seed;
+        }
 
         Vector2[] indexOffsets = new Vector2[100];
-
+        
         int index = 0;
         for (int i = -5; i < 5; i++)
         {
@@ -150,7 +202,7 @@ public class MapGenerator : MonoBehaviour
         for (int i = 0; i < 100; i += 1)
         {
             int i1 = i;
-            Task<Tuple<int, MapData>> task0 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(mapIndexes[i1], mapSize, center, offset, indexOffsets[99 - i1]));
+            Task<Tuple<int, MapData>> task0 = Task.Factory.StartNew(() =>  GenerateMapDataParallel(mapIndexes[i1], mapSize, seed, center, offset, indexOffsets[99 - i1], useFallOff, mapArgs));
             tasks.Add(task0);
         }
 
@@ -163,7 +215,7 @@ public class MapGenerator : MonoBehaviour
         
         return mapDatas;
     }
-    public Tuple<int, MapData> GenerateMapDataParallel(int index, int size, Vector2 center, Vector2 offset, Vector2 indexOffset)
+    public Tuple<int, MapData> GenerateMapDataParallel(int index, int size, int seed, Vector2 center, Vector2 offset, Vector2 indexOffset, bool useFallOff, Serializables.MapArgs mapArgs)
     {
     
         Color[] colorMap = new Color[(size / 10) * (size / 10)];
@@ -171,11 +223,11 @@ public class MapGenerator : MonoBehaviour
         float[,] noiseMap = Noise.GenerateNoiseMap(
             size / 10, 
             size / 10, 
-            Int32.Parse(uiInputs.seed.text), 
-            mapArguments.noiseScale, 
-            mapArguments.octaves, 
-            mapArguments.persistance, 
-            mapArguments.lacunarity, 
+            seed, 
+            mapArgs.noiseScale, 
+            mapArgs.octaves, 
+            mapArgs.persistance, 
+            mapArgs.lacunarity, 
             center + offset + indexOffset, 
             normalizeMode
         );
@@ -184,9 +236,8 @@ public class MapGenerator : MonoBehaviour
         {
             for (int x = 0; x < size / 10; x++)
             {
-                if (uiInputs.useFallOff.isOn)
+                if (useFallOff)
                 {
-                    //Debug.Log("X: "+x+", Y: "+y+", index: " + index);
                     noiseMap[x, y] = Mathf.Clamp01(noiseMap[x, y] - fallOffMap[index][x, y]);
                 }
                 float currentHeight = noiseMap[x, y];
@@ -204,35 +255,68 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        return new Tuple<int, MapData>(index, new MapData(noiseMap, colorMap));
+        return new Tuple<int, MapData>(index, new MapData(noiseMap, colorMap, size / 10));
     }
 
-    public void SetFallOffMap()
+    public void SetFallOffMap(MapInfoSerializer mapInfoSerializer = null)
     {
-        int mapSize = (int) uiInputs.size.value * 200;
-        if (uiInputs.useFallOff){
-            if (uiInputs.useFallOff.isOn)
-            {
-                fallOffMap = FallOffGenerator.GenerateFallOff(
-                    mapSize, 
-                    uiInputs.fallOffRate.value, 
-                    (Serializables.FallOffType)uiInputs.fallOffType.value, 
-                    (Serializables.FallOffDirection)uiInputs.fallOffDirection.value
-                    );
+        int mapSize;
+        float fallOffRate;
+        Serializables.FallOffType fallOffType;
+        Serializables.FallOffDirection fallOffDirection;
+        bool fallOffActive = false;
+        
+        
+        if (mapInfoSerializer == null)
+        {
+            if (uiInputs.useFallOff){
+                if (uiInputs.useFallOff.isOn)
+                {
+                    fallOffActive = true;
+                }
             }
+            
+            mapSize = (int) uiInputs.size.value * 200;
+            fallOffRate = uiInputs.fallOffRate.value;
+            fallOffType = (Serializables.FallOffType)uiInputs.fallOffType.value;
+            fallOffDirection = (Serializables.FallOffDirection) uiInputs.fallOffDirection.value;
         }
+        else
+        {
+            fallOffActive = true;
+            mapSize = mapInfoSerializer.size;
+            fallOffRate = mapInfoSerializer.fallOffRate;
+            fallOffType = mapInfoSerializer.fallOffType;
+            fallOffDirection = mapInfoSerializer.fallOffDirection;
+        }
+
+        if (!fallOffActive)
+            return;
+        
+        fallOffMap = FallOffGenerator.GenerateFallOff(
+            mapSize, 
+            fallOffRate, 
+            fallOffType, 
+            fallOffDirection
+        );
+    }
+
+    public Serializables.UIInputs GetUIInputs()
+    {
+        return uiInputs;
     }
 }
 
 public struct MapData
 {
-    public float[,] heightMap;
+    public float[] heightMap;
     public Color[] colorMap;
-
-    public MapData(float[,] heightMap, Color[] colorMap)
+    public int mapSize;
+    public MapData(float[,] heightMap, Color[] colorMap,int mapSize)
     {
-        this.heightMap = heightMap;
+        this.heightMap = Global.To1DArray(heightMap);
         this.colorMap = colorMap;
+        this.mapSize = mapSize;
     }
 }
 
