@@ -1154,6 +1154,7 @@ MonoBehaviour:
   normalizeMode: 1
   image: {fileID: 1788671806951839807, guid: b558aff491e367b4591b6d431db5957b, type: 3}
   imageParent: {fileID: 1301070616}
+  isMapLoader: 0
 --- !u!4 &268399726
 Transform:
   m_ObjectHideFlags: 0
@@ -1181,9 +1182,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bbd6b2becc0381479b0b0a927ba9747, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textureRenderer: {fileID: 1788671806951839777, guid: b558aff491e367b4591b6d431db5957b, type: 3}
-  meshFilter: {fileID: 1788671806951839776, guid: b558aff491e367b4591b6d431db5957b, type: 3}
-  meshRenderer: {fileID: 1788671806951839777, guid: b558aff491e367b4591b6d431db5957b, type: 3}
 --- !u!114 &299398668 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4912508344789082217, guid: a54efbec40f675942b7d204effad47db, type: 3}
@@ -1683,7 +1681,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6154574459841062135, guid: 2aadce71ff168c34d85ac277c11050a7, type: 3}
       propertyPath: m_Text
-      value: Random Offset
+      value: Map Size
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2aadce71ff168c34d85ac277c11050a7, type: 3}

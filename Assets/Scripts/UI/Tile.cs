@@ -1,71 +1,41 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 public class Tile : MonoBehaviour
 {
-    [SerializeField] Sprite unselected;
-    [SerializeField] Sprite hovered;
-    [SerializeField] Sprite selected;
-    [SerializeField] GameObject textObject; 
-
-    Vector2 size;
-    public Vector2 tileIndex;
-    private bool tileSelected = false;
-    void Start()
-    {
-        size = GetComponent<SpriteRenderer>().size;
-        GetComponent<SpriteRenderer>().sprite = unselected;
-        GetComponent<SpriteRenderer>().size = size;
-    }
+    public Texture2D texture;
+    private Color[] baseColors;
 
     void Update()
     {
-        if (Global.globalIndex != tileIndex && Global.tileUpdate)
-        {
-            GetComponent<SpriteRenderer>().sprite = unselected;
-            GetComponent<SpriteRenderer>().size = size;
-        }
+        if (baseColors == null && texture)
+            baseColors = texture.GetPixels();
+    }
+    
+    private void OnMouseOver()
+    {
+        AddOutlineWithColor(Color.red);
     }
 
-    void OnMouseOver()
+    private void OnMouseExit()
     {
-        if(Global.globalIndex != tileIndex)
-        {
-            GetComponent<SpriteRenderer>().sprite = hovered;
-            GetComponent<SpriteRenderer>().size = size;
-            Global.tileUpdate = false;
-        }
+        if(texture)
+            gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
     }
 
-    private void OnMouseDown()
+    private void AddOutlineWithColor(Color outlineColor)
     {
-        if (Global.globalIndex != tileIndex && tileSelected == false)
+        int size = (int)Mathf.Sqrt(baseColors.Length);
+        Color[] colors = texture.GetPixels();
+        for (int i = 0; i < size; i++)
         {
-            GetComponent<SpriteRenderer>().sprite = selected;
-            GetComponent<SpriteRenderer>().size = size;
-            tileSelected = true;
-            Global.globalIndex = tileIndex;
-            Global.tileUpdate = true;
-            textObject.GetComponent<TextMesh>().text = "A";
+            for (int j = 0; j < size; j++)
+            {
+                if(i == 0 || j == 0 || i == size - 2 || j == size - 2)
+                    colors[i * size + j] = outlineColor;
+            }
         }
-        else if (tileSelected)
-        {
-            GetComponent<SpriteRenderer>().sprite = unselected;
-            tileSelected = false;
-            Global.globalIndex = new Vector2(999,999);
-            textObject.GetComponent<TextMesh>().text = "";
-        }
-    }
 
-    void OnMouseExit()
-    {
-        if(Global.globalIndex != tileIndex)
-        {
-            GetComponent<SpriteRenderer>().sprite = unselected;
-            GetComponent<SpriteRenderer>().size = size;
-        }
+        gameObject.GetComponent<MeshRenderer>().material.mainTexture =
+            TextureGenerator.TextureFromColorMap(colors, size, size);
     }
 }

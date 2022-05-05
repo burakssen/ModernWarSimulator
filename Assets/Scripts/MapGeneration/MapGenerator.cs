@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 public class MapGenerator : MonoBehaviour
@@ -68,51 +69,39 @@ public class MapGenerator : MonoBehaviour
     
     public void DrawMeshMap(MapData[] mapData, MapDisplay display, MapInfoSerializer mapInfoSerializer, Serializables.MapArgs mapArgs, GameObject[] planes)
     {
-        List<Task> tasks = new List<Task>();
+        List<Task<Tuple<int, MeshData>>> tasks = new List<Task<Tuple<int, MeshData>>>();
         
         for (int i = 0; i < 100; i++)
         {
             int index = i;
-            Task task = Task.Factory.StartNew(() => DrawMeshMapParallel(mapData[index], display, mapInfoSerializer.size / 10, mapArgs, planes[index]));
+            Task<Tuple<int, MeshData>> task = Task.Factory.StartNew(() => DrawMeshMapParallel(index, mapData[index], mapArgs));
             tasks.Add(task);
         }
-
         Task.WaitAll(tasks.ToArray());
+
+        foreach (var task in tasks)
+        {
+            display.DrawMesh(
+                task.Result.Item2,
+                TextureGenerator.TextureFromColorMap(
+                    mapData[task.Result.Item1].colorMap, 
+                    mapInfoSerializer.size / 10, 
+                    mapInfoSerializer.size / 10
+                ),
+                planes[task.Result.Item1]
+            );
+        }
     }
 
-    public void DrawMeshMapParallel(MapData mapData, MapDisplay display, int size, Serializables.MapArgs mapArgs, GameObject plane)
+    public Tuple<int, MeshData> DrawMeshMapParallel(int index, MapData mapData, Serializables.MapArgs mapArgs)
     {
-        int mapSize = size;
-        float[,] heightMap = Global.To2DArray(mapData.heightMap, size, size);
-        int rows = heightMap.GetLength(0);
-        int cols = heightMap.GetLength(1);
-
-        float[,] flippedHeightMap = new float[rows, cols];
-        Color[] flippedColorMap = new Color[rows * cols];
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < cols; j++)
-            {
-                flippedHeightMap[i, j] = heightMap[rows - i - 1, j];
-                flippedColorMap[i * cols + j] = mapData.colorMap[i * cols + (cols - 1) - j];
-            }
-        }
-        // Fixme -> You are here
-        display.DrawMesh(
+        return new Tuple<int, MeshData>(index,
             MeshGenerator.GenerateTerrainMesh(
-                flippedHeightMap, 
-                mapArgs.meshHeightMultiplier, 
-                mapArgs.meshHeightCurve, 
-                mapArgs.editorPreivewLevelOfDetail
-            ), 
-            TextureGenerator.TextureFromColorMap(
-                flippedColorMap, 
-                mapSize, 
-                mapSize
-            ),
-            plane.GetComponent<MeshRenderer>(),
-            plane.GetComponent<MeshFilter>()
-        );
+            mapData,
+            mapArgs.meshHeightMultiplier,
+            mapArgs.meshHeightCurve,
+            mapArgs.editorPreivewLevelOfDetail
+        ));
     }
 
     public void DrawMapInEditor()
@@ -137,7 +126,6 @@ public class MapGenerator : MonoBehaviour
     
     public MapData[] GenerateMapData(Vector2 center, MapInfoSerializer mapInfoSerializer = null, Serializables.MapArgs mArgs = default)
     {
-
         int mapSize;
         Vector2 offset;
         int seed;
@@ -180,7 +168,7 @@ public class MapGenerator : MonoBehaviour
         {
             for (int j = -5; j < 5; j++)
             {
-                indexOffsets[index] = new Vector2((mapSize / 10) * i, (mapSize / 10) * j);
+                indexOffsets[index] = new Vector2((mapSize / 10) * i - i, (mapSize / 10) * j - j);
                 index++;
             }
         }
@@ -309,35 +297,17 @@ public class MapGenerator : MonoBehaviour
 
 public struct MapData
 {
-    public float[] heightMap;
+    public float[,] heightMap;
     public Color[] colorMap;
     public int mapSize;
-    public MapData(float[,] heightMap, Color[] colorMap,int mapSize)
+    public MapData(float[,] heightMap, Color[] colorMap, int mapSize)
     {
-        this.heightMap = Global.To1DArray(heightMap);
+        this.heightMap = heightMap;
         this.colorMap = colorMap;
         this.mapSize = mapSize;
     }
 }
 
 
-public struct MapDataDataClass
-{
-    public int index;
-    public int size;
-    public Vector2 center;
-    public Vector2 offset;
-    public Vector2 indexOffset;
-    public List<MapData> imageMaps;
 
-    public MapDataDataClass(int index, int size, Vector2 center, Vector2 offset, Vector2 indexOffset, ref List<MapData> imageMaps)
-    {
-        this.index = index;
-        this.size = size;
-        this.center = center;
-        this.offset = offset;
-        this.indexOffset = indexOffset;
-        this.imageMaps = imageMaps;
-    }
-}
 

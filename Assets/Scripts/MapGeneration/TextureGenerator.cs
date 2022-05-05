@@ -19,7 +19,7 @@ public static class TextureGenerator
         int width = heightMap.GetLength(0);
         int height = heightMap.GetLength(1);
 
-        Color[] colorMap = new Color[width * height];
+        Color[] colorMap = new Color[width*height];
 
         for (int y = 0; y < height; y++)
         {

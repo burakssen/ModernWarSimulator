@@ -12,9 +12,13 @@ public class MapDisplay : MonoBehaviour
         image.sprite = sprite;
     }
 
-    public void DrawMesh(MeshData meshData, Texture2D texture, MeshRenderer meshRenderer, MeshFilter meshFilter)
+    public void DrawMesh(MeshData meshData, Texture2D texture, GameObject plane)
     {
-        meshFilter.sharedMesh = meshData.CreateMesh();
-        meshRenderer.sharedMaterial.mainTexture = texture;
+        MeshFilter meshFilter = plane.GetComponent<MeshFilter>();
+        MeshRenderer meshRenderer = plane.GetComponent<MeshRenderer>();
+        meshFilter.mesh = meshData.CreateMesh();
+        plane.GetComponent<MeshCollider>().sharedMesh = meshFilter.mesh;
+        meshRenderer.material.mainTexture = texture;
+        plane.GetComponent<Tile>().texture = texture;
     }
 }

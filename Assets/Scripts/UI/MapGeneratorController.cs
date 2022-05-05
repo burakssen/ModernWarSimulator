@@ -143,7 +143,7 @@ public class MapGeneratorController : MonoBehaviour
         MapInfoSerializer mapInfoSerializer = new MapInfoSerializer();
         mapInfoSerializer.mapName = mapName.text;
         mapInfoSerializer.seed = Int32.Parse(uiInputs.seed.text);
-        mapInfoSerializer.size = (int) uiInputs.size.value * 200;
+        mapInfoSerializer.size = (int) uiInputs.size.value * 200 + 1;
         mapInfoSerializer.fallOffDirection = (Serializables.FallOffDirection) uiInputs.fallOffDirection.value;
         mapInfoSerializer.fallOffType = (Serializables.FallOffType) uiInputs.fallOffType.value;
         mapInfoSerializer.fallOffRate = uiInputs.fallOffRate.value;

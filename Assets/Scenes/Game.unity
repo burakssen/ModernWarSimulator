@@ -227,6 +227,7 @@ GameObject:
   m_Component:
   - component: {fileID: 788591263}
   - component: {fileID: 788591262}
+  - component: {fileID: 788591264}
   m_Layer: 0
   m_Name: MapGenerator
   m_TagString: Untagged
@@ -267,8 +268,8 @@ MonoBehaviour:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0
-        value: 0
+        time: -0.0000017806888
+        value: 0.2028371
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -276,8 +277,8 @@ MonoBehaviour:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.47526082
-        value: 0.14830002
+        time: 0.5585891
+        value: 0.31809983
         inSlope: 0.6035598
         outSlope: 0.6035598
         tangentMode: 0
@@ -285,8 +286,8 @@ MonoBehaviour:
         inWeight: 0.33333334
         outWeight: 0.66412455
       - serializedVersion: 3
-        time: 0.6819076
-        value: 0.36372262
+        time: 0.7444076
+        value: 0.5335224
         inSlope: 1.8463132
         outSlope: 1.8463132
         tangentMode: 0
@@ -362,9 +363,21 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1521729085
+--- !u!114 &788591264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 788591261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bbd6b2becc0381479b0b0a927ba9747, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &1410191066
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -372,28 +385,28 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1521729086}
+  - component: {fileID: 1410191067}
   m_Layer: 0
-  m_Name: Planes
+  m_Name: PlaneParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1521729086
+--- !u!4 &1410191067
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1521729085}
+  m_GameObject: {fileID: 1410191066}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 14.532433, y: -12.432783, z: 9.039231}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1690534573
 GameObject:
@@ -471,14 +484,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1690534573}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.47116557, y: -0, z: -0, w: 0.88204485}
+  m_LocalPosition: {x: 0, y: 160.5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 56.22, y: 0, z: 0}
 --- !u!1 &1776847555
 GameObject:
   m_ObjectHideFlags: 0
@@ -598,7 +611,7 @@ MonoBehaviour:
     - name: Snow
       height: 0.9
       color: {r: 1, g: 0.9746351, b: 0.9292453, a: 0}
-  planeParent: {fileID: 1521729085}
+  planeParent: {fileID: 1410191066}
 --- !u!4 &1776847557
 Transform:
   m_ObjectHideFlags: 0
