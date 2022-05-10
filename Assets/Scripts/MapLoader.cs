@@ -24,7 +24,7 @@ public class MapLoader : MonoBehaviour{
                 GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane); //Create GO and add necessary components
                 plane.transform.SetParent(planeParent.transform);
                 _planes[i * 10 + j] = plane;
-                plane.AddComponent<Tile>();
+                Tile tile = plane.AddComponent<Tile>();
             }
         }
         
@@ -34,7 +34,7 @@ public class MapLoader : MonoBehaviour{
             for (int j = 0; j < 10; j++)
             {
                
-                GameObject plane = _planes[i * 10 + j]; //Create GO and add necessary components
+                GameObject plane = _planes[i * 10 + j];
                 Mesh planeMesh = plane.GetComponent<MeshFilter>().mesh;
                 Bounds bounds = planeMesh.bounds;
                 float width = plane.transform.localScale.x * bounds.size.x;

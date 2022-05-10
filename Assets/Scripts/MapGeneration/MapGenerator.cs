@@ -81,6 +81,10 @@ public class MapGenerator : MonoBehaviour
 
         foreach (var task in tasks)
         {
+            int mapSize = mapData[task.Result.Item1].mapSize;
+            planes[task.Result.Item1].GetComponent<Tile>().averageHeight = mapData[task.Result.Item1].heightMap.Cast<float>().Sum() / (mapSize*mapSize);
+            planes[task.Result.Item1].GetComponent<Tile>().centerHeight =
+                mapData[task.Result.Item1].heightMap[(int)(mapSize / 2), (int)(mapSize / 2)];
             display.DrawMesh(
                 task.Result.Item2,
                 TextureGenerator.TextureFromColorMap(
@@ -95,6 +99,7 @@ public class MapGenerator : MonoBehaviour
 
     public Tuple<int, MeshData> DrawMeshMapParallel(int index, MapData mapData, Serializables.MapArgs mapArgs)
     {
+
         return new Tuple<int, MeshData>(index,
             MeshGenerator.GenerateTerrainMesh(
             mapData,
