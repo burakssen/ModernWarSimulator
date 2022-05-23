@@ -52,7 +52,7 @@ public class Tile : MonoBehaviour
             GameObject gObject = Instantiate(objectToPlace, transform);
             gObject.transform.position = new Vector3(gameObject.transform.position.x, 0, gameObject.transform.position.z);
             gObject.transform.localPosition =
-                new Vector3(gObject.transform.localPosition.x, hit.point.y + 15f, gObject.transform.localPosition.z);
+                new Vector3(gObject.transform.localPosition.x, hit.point.y + 20f, gObject.transform.localPosition.z);
             occupied = true;
         }
     }
@@ -63,7 +63,7 @@ public class Tile : MonoBehaviour
             Clear();
     }
 
-    private void Clear()
+    public void Clear()
     {
         gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
     }
