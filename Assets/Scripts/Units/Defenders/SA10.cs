@@ -6,41 +6,50 @@ using UnityEngine;
 public class SA10 : BaseDefence
 {
     private List<Tuple<GameObject, Vector3>> spawned;
-    [SerializeField] public GameObject missle;
+    [SerializeField] public GameObject missile;
     public List<GameObject> missiles;
     public virtual void Start()
     {
-       
         spawned = new List<Tuple<GameObject, Vector3>>();
         foreach (var point in spawnPoints)
         {
-            GameObject m = Instantiate(missle, point.transform.position, missle.transform.localRotation);
+            GameObject m = Instantiate(missile, point.transform.position, missile.transform.localRotation);
             missiles.Add(m);
             spawned.Add(new Tuple<GameObject, Vector3>(m, m.transform.position));
         }
     }
-    
-    public override void SetTargets()
+
+    public void Update()
     {
-        if (targetPool.Count <= 0)
+        
+        if (!currentTarget)
             return;
+        
+        if(setTargets)
+        {
+            SetTargets(currentTarget);
+            setTargets = false;
+        }
+    }
+    
+    public override void SetTargets(GameObject target)
+    {
+        base.SetTargets(target);
         
         int time = 3;
         foreach (var missile in missiles)
         {
+            if(!missile)
+                continue;
             StartCoroutine(SetTargetToMissile(missile, time));
             time += 3;
         }
     }
-    
+
     IEnumerator SetTargetToMissile(GameObject missile, float time)
     {
         yield return new WaitForSeconds(time);
-        if (targetPool.Count > 0)
-        {
-            GameObject target = targetPool[0];
-            missile.GetComponent<Missile>().SetTarget(target);
-        }
+        missile.GetComponent<MissileBase>().SetTarget(currentTarget);
     }
 
 }

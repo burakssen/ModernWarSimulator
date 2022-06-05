@@ -8,6 +8,7 @@ TagManager:
   - Toggle
   - Image
   - AttackerCount
+  - waypoint
   layers:
   - Default
   - TransparentFX

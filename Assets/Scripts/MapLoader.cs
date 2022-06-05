@@ -14,7 +14,7 @@ public class MapLoader : MonoBehaviour{
     
     private void Start()
     {
-        MapInfoSerializer mapInfoSerializer = GetMapData("Level2");
+        MapInfoSerializer mapInfoSerializer = GetMapData("Level-1");
         MapGenerator mapGenerator = FindObjectOfType<MapGenerator>();
         MapData[] mapDatas = mapGenerator.GenerateMapData(Vector2.zero, mapInfoSerializer, mapArguments);
         

@@ -1,26 +1,23 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SpawnObject : MonoBehaviour
 {
     [SerializeField] private GameObject missile;
-    [SerializeField] float timer = 4f;
-    [SerializeField] private GameObject targetObj;
-    private float timeVal;
 
-    void Start()
+    [SerializeField] private float time = 0f;
+
+    [SerializeField] private GameObject target;
+    private void Update()
     {
-        timeVal = timer;
-    }
-    void Update()
-    {
-        timeVal -= Time.deltaTime;
-        if (timeVal <= 0f)
+        if (Time.time > time)
         {
-            GameObject t = Instantiate(missile, transform.position, missile.transform.rotation);
-            t.GetComponent<Missile>().SetTarget(targetObj);
-            timeVal = timer;
+            time += 4f;
+            GameObject g = Instantiate(missile);
+            g.GetComponent<MissileBase>().SetTarget(target);
         }
     }
 }

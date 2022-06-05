@@ -27,7 +27,6 @@ public class PIDController
         i += p * deltaTime;
         d = (p - prevError) / deltaTime;
         prevError = currentError;
-        
         return p * kp + i * ki + d * kd;
     }
 }

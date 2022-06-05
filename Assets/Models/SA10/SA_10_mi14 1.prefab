@@ -344,8 +344,8 @@ GameObject:
   - component: {fileID: 4986663111534043192}
   - component: {fileID: 4845866102403025555}
   - component: {fileID: 6042755443844873590}
-  - component: {fileID: 7668768053256771243}
   - component: {fileID: 2979990989610864405}
+  - component: {fileID: -7035669637627388648}
   m_Layer: 0
   m_Name: SA_10_mi14 1
   m_TagString: Untagged
@@ -433,38 +433,12 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 1000
-  m_UseGravity: 1
+  m_AngularDrag: 10
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7668768053256771243
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7602456759604944638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 903adc09acd52c147b2f889bc6ec04ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  useDirectional: 0
-  thurst: 2000
-  maxAngulerVelocity: 20
-  target: {fileID: 0}
-  xP: 0.6
-  xI: 1
-  xD: 0.2505
-  yP: 0.3
-  yI: 0.06
-  yD: 0.375
-  zP: 0
-  zI: 0
-  zD: 0
-  enable: 0
 --- !u!65 &2979990989610864405
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -478,3 +452,29 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.51072234, y: 0.51072216, z: 7.1111193}
   m_Center: {x: -0.00000014901161, y: -0.00000029802322, z: 3.765305}
+--- !u!114 &-7035669637627388648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7602456759604944638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31627de7bc6647528105cd76c5fd0134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  enable: 1
+  thrust: 100
+  thrustLimit: 1119
+  maxAngularVelocity: 20
+  xP: -0.5
+  xI: -1
+  xD: -0.0625
+  yP: -0.5
+  yI: -1
+  yD: -0.0625
+  zP: 0
+  zI: 0
+  zD: 0
