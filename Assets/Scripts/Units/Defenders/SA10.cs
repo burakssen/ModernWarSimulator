@@ -5,22 +5,23 @@ using UnityEngine;
 
 public class SA10 : BaseDefence
 {
-    private List<Tuple<GameObject, Vector3>> spawned;
+    private bool spawned = false;
     [SerializeField] public GameObject missile;
     public List<GameObject> missiles;
-    public virtual void Start()
-    {
-        spawned = new List<Tuple<GameObject, Vector3>>();
-        foreach (var point in spawnPoints)
-        {
-            GameObject m = Instantiate(missile, point.transform.position, missile.transform.localRotation);
-            missiles.Add(m);
-            spawned.Add(new Tuple<GameObject, Vector3>(m, m.transform.position));
-        }
-    }
-
+   
     public void Update()
     {
+        if (Global.gameState == Global.GameState.play && !spawned)
+        {
+            foreach (var point in spawnPoints)
+            {
+                GameObject m = Instantiate(missile, point.transform.position, missile.transform.localRotation);
+                m.transform.SetParent(transform);
+                missiles.Add(m);
+            }
+
+            spawned = true;
+        }
         
         if (!currentTarget)
             return;
@@ -49,7 +50,9 @@ public class SA10 : BaseDefence
     IEnumerator SetTargetToMissile(GameObject missile, float time)
     {
         yield return new WaitForSeconds(time);
-        missile.GetComponent<MissileBase>().SetTarget(currentTarget);
+        MissileBase missileBase = missile.GetComponent<MissileBase>();
+        missileBase.SetTarget(currentTarget);
+        missileBase.enable = true;
     }
 
 }

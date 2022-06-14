@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Attacker1
   m_EditorClassIdentifier: 
   image: {fileID: 7875520042970248079, guid: db8aa40ed7a168f40b510a5c0993d7ef, type: 3}
-  attackerName: Attacker
-  damage: 500
+  gameObject: {fileID: 1417528132636214857, guid: b8e7e578f01650647986d10f0fced13f, type: 3}
+  attackerName: FreeFall
+  damage: 200
   attackerType: 0
-  reloadTime: 2
-  range: 100
+  health: 1000

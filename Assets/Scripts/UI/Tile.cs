@@ -13,11 +13,16 @@ public class Tile : MonoBehaviour
 
     void Start()
     {
-        
         sceneCamera = FindObjectOfType<Camera>();
     }
     void Update()
-    { 
+    {
+        if (Global.budget <= 0)
+            placeable = false;
+        
+        if (Global.gameState == Global.GameState.play)
+            return;
+
         Vector3 pos = sceneCamera.ScreenToWorldPoint(Input.mousePosition);
         
         Debug.DrawRay(pos, Vector3.forward, Color.green);
@@ -29,27 +34,46 @@ public class Tile : MonoBehaviour
                 placeable = false;
                 AddXWithColor(Color.red);
             }
+            else
+            {
+                gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
+            }
         }
     }
     
     private void OnMouseOver()
     {
-        if(placeable)
+        if(placeable && Global.selectedDefence && Global.budget >= Global.selectedDefence.cost)
             AddOutlineWithColor(Color.white);
     }
 
     private void OnMouseDown()
     {
+        if (Global.gameState == Global.GameState.play)
+            return;
+        
+        if(!Global.selectedDefence || Global.budget < Global.selectedDefence.cost)
+            return;
+        
+        if (objectToPlace == null)
+            return;
+        
+        if (!placeable)
+            return;
+        
         if (occupied)
             return;
-
+        
         if (averageHeight > 0.65 || averageHeight < 0.2)
             return;
         
+        Global.budget -= Global.selectedDefence.cost;
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit)) {
             GameObject gObject = Instantiate(objectToPlace, transform);
+            gObject.GetComponent<SphereCollider>().enabled = false;
             gObject.transform.position = new Vector3(gameObject.transform.position.x, 0, gameObject.transform.position.z);
             gObject.transform.localPosition =
                 new Vector3(gObject.transform.localPosition.x, hit.point.y + 20f, gObject.transform.localPosition.z);
@@ -59,6 +83,13 @@ public class Tile : MonoBehaviour
 
     private void OnMouseExit()
     {
+        if (Global.gameState == Global.GameState.play)
+            return;
+        
+        if(!Global.selectedDefence || Global.budget < Global.selectedDefence.cost)
+            return;
+
+        
         if(texture && placeable)
             Clear();
     }
@@ -66,6 +97,8 @@ public class Tile : MonoBehaviour
     public void Clear()
     {
         gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
+        if(Global.gameState == Global.GameState.play)
+            placeable = false;
     }
 
     private void AddOutlineWithColor(Color outlineColor)

@@ -15,6 +15,7 @@ public class FreeFallMissile : MissileBase
         parent = transform.parent.transform.parent.transform.parent.gameObject;
         disable = false;
         activate = false;
+        Destroy(gameObject, 10f);
     }
     
     void FixedUpdate()

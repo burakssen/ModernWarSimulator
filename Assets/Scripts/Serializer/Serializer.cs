@@ -28,15 +28,25 @@ public class MapInfoSerializer
     [DataMember] public Serializables.FallOffType fallOffType;
     [DataMember] public float fallOffRate;
     [DataMember] public Serializables.FallOffDirection fallOffDirection;
-    [DataMember] public List<WaveSerializer> waves;
+    [DataMember] public List<AttackerSelectionSerializer> attackerSelections;
+    [DataMember] public int budget;
 
 }
 
 [DataContract]
-public class WaveSerializer
+public class AttackerSelectionSerializer
 {
-    [DataMember] public int waveNumber;
-    [DataMember] public List<Tuple<string, int>> list;
+    [DataMember]
+    public string attackerName;
+    
+    [DataMember]
+    public int damage;
+    
+    [DataMember]
+    public AttackerSelection.AttackerType attackerType;
+
+    [DataMember] 
+    public int numberOfAttacker;
 }
 
 public class Serializer

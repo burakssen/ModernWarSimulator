@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1c0d8cef0da4441b9bef8e5b18c5d24, type: 3}
+  m_Name: Defence2
+  m_EditorClassIdentifier: 
+  cost: 150
+  name: AAG
+  gameObject: {fileID: 3951121576996221447, guid: 8c59f553e2c7ff94da2ca318333cd09e, type: 3}
+  health: 1000
+  damage: 10
+  defenceType: 1

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Attacker2
   m_EditorClassIdentifier: 
   image: {fileID: 7875520042970248079, guid: db8aa40ed7a168f40b510a5c0993d7ef, type: 3}
-  attackerName: Deneme
-  damage: 456
+  gameObject: {fileID: 1417528132636214857, guid: b8e7e578f01650647986d10f0fced13f, type: 3}
+  attackerName: Directional
+  damage: 300
   attackerType: 1
-  reloadTime: 4564
-  range: 4564
+  health: 1000

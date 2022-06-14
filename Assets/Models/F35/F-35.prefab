@@ -262,6 +262,7 @@ GameObject:
   - component: {fileID: 6333672204710475923}
   - component: {fileID: 5265686216258438018}
   - component: {fileID: 1417528132636214853}
+  - component: {fileID: -2818124243031401815}
   m_Layer: 0
   m_Name: F-35
   m_TagString: Untagged
@@ -295,7 +296,7 @@ BoxCollider:
   m_GameObject: {fileID: 1417528132636214857}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 10.340164, y: 2.0636487, z: 13.679443}
   m_Center: {x: 0.01662445, y: 0.21605372, z: -1.1825256}
@@ -349,6 +350,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!135 &-2818124243031401815
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1417528132636214857}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 65
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1509374664939189724
 GameObject:
   m_ObjectHideFlags: 0

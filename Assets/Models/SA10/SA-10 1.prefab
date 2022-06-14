@@ -980,6 +980,7 @@ GameObject:
   - component: {fileID: 2064722394203459328}
   - component: {fileID: 8679043506035103056}
   - component: {fileID: 5584927673395134991}
+  - component: {fileID: 8454154279043071841}
   m_Layer: 0
   m_Name: SA-10 1
   m_TagString: Untagged
@@ -1107,9 +1108,23 @@ MonoBehaviour:
   - {fileID: 7870182474944299716}
   - {fileID: 7870182474256463812}
   - {fileID: 7870182473876718617}
-  missle: {fileID: 0}
-  targetPool: []
+  setTargets: 0
   currentTarget: {fileID: 0}
+  missile: {fileID: 0}
+  missiles: []
+--- !u!135 &8454154279043071841
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3941829508909804411}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 65
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3966482452453983079
 GameObject:
   m_ObjectHideFlags: 0

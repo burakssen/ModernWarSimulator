@@ -26,9 +26,13 @@ public class AAG : BaseDefence
             return;
         
         SetTargets(currentTarget);
+
         
         if (!shoot)
             return;
+
+        
+        
         
         StartCoroutine(enumerator);
         shoot = false;

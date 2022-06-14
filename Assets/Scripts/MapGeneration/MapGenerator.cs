@@ -21,15 +21,6 @@ public class MapGenerator : MonoBehaviour
         if (isMapLoader)
             return;
         
-        fallOffMap = new List<float[,]>(100);
-        SetFallOffMap();
-    }
-
-    void Start()
-    {
-        if (isMapLoader)
-            return;
-        
         map = new Image[100];
         for (int i = 0; i < 10; i++)
         {
@@ -41,8 +32,10 @@ public class MapGenerator : MonoBehaviour
                 map[i * 10 + j] = tImage;
             }
         }
+        
+        fallOffMap = new List<float[,]>(100);
+        SetFallOffMap();
     }
-    
     public void DrawColorMap(MapData[] mapData, MapDisplay display)
     {
         int mapSize = (int) uiInputs.size.value * 200;
@@ -111,6 +104,7 @@ public class MapGenerator : MonoBehaviour
 
     public void DrawMapInEditor()
     {
+        //Start();
         MapData[] mapData = GenerateMapData(Vector2.zero);
         currentMapData = mapData;
         MapDisplay display = FindObjectOfType<MapDisplay>();

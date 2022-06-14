@@ -7,15 +7,14 @@ public class AttackerSelection : ScriptableObject
     public Image image;
     public enum AttackerType
     {
-        Directional,
-        Homing
+        FreeFall,
+        Directional
     };
+
+    public GameObject gameObject;
     
     public string attackerName;
     public int damage;
-    
     public AttackerType attackerType;
-
-    public int reloadTime;
-    public int range;
+    public int health;
 }

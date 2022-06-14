@@ -21,6 +21,8 @@ public class MapGeneratorController : MonoBehaviour
     [SerializeField] TMP_Text notification;
     [SerializeField] GameObject[] AllUIElements;
     [SerializeField] GameObject[] EditorUI;
+    [SerializeField] public TMP_InputField budget;
+
     void Start()
     {
         FindObjectOfType<MapGenerator>().DrawMapInEditor();
@@ -86,6 +88,7 @@ public class MapGeneratorController : MonoBehaviour
             PlayerPrefs.SetFloat("fallOffRate", fallOffRate.value);
             PlayerPrefs.SetInt("seed", Int32.Parse(seed.text));
             
+            
             ChangeUIType();
         }
         else
@@ -120,24 +123,15 @@ public class MapGeneratorController : MonoBehaviour
 
     public void Serialize()
     {
-        List<Wave> waveValues = FindObjectOfType<DisplayAttacker>().GetWaves();
+        List<AttackerSelectionSerializer> attackerSelectionValues = FindObjectOfType<DisplayAttacker>().GetAttackerSelectionSerializers();
         
-        List<WaveSerializer> waves = new List<WaveSerializer>();
+        List<AttackerSelectionSerializer> attackerSelectionSerializers = new List<AttackerSelectionSerializer>();
 
         Serializables.UIInputs uiInputs = FindObjectOfType<MapGenerator>().GetUIInputs();
-
-        foreach (var wave in waveValues)
+        
+        foreach (var attackerSelection in attackerSelectionValues)
         {
-            WaveSerializer newWave = new WaveSerializer();
-            newWave.waveNumber = wave.waveNumber;
-            newWave.list = new List<Tuple<string, int>>();
-            
-            foreach (var w in wave.list)
-            {
-                newWave.list.Add(new Tuple<string, int>(w.Item1.attackerName, Int32.Parse(w.Item2.transform.GetChild(2).gameObject.GetComponent<TMP_InputField>().text)));
-            }
-
-            waves.Add(newWave);
+            attackerSelectionSerializers.Add(attackerSelection);
         }
         
         MapInfoSerializer mapInfoSerializer = new MapInfoSerializer();
@@ -148,9 +142,10 @@ public class MapGeneratorController : MonoBehaviour
         mapInfoSerializer.fallOffType = (Serializables.FallOffType) uiInputs.fallOffType.value;
         mapInfoSerializer.fallOffRate = uiInputs.fallOffRate.value;
         mapInfoSerializer.useFallOff = uiInputs.useFallOff.isOn;
-        mapInfoSerializer.offSetX = Int32.Parse(uiInputs.offsetX.text);
-        mapInfoSerializer.offSetY = Int32.Parse(uiInputs.offsetY.text);
-        mapInfoSerializer.waves = waves;
+        mapInfoSerializer.offSetX = float.Parse(uiInputs.offsetX.text);
+        mapInfoSerializer.offSetY = float.Parse(uiInputs.offsetY.text);
+        mapInfoSerializer.attackerSelections = attackerSelectionSerializers;
+        mapInfoSerializer.budget = Int32.Parse(budget.text);
         
         MapSerializer mapSerializer = new MapSerializer();
         mapSerializer.mapInfoSerializer = mapInfoSerializer;
