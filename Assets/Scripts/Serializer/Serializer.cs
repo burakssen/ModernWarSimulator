@@ -9,9 +9,10 @@ using System.Text;
 public class MapSerializer : Serializer
 {
     public MapInfoSerializer mapInfoSerializer;
+
     public void Serialize(string path)
     {
-        string data = SerializeToString(mapInfoSerializer);
+        var data = SerializeToString(mapInfoSerializer);
         File.WriteAllText(path + $"/{mapInfoSerializer.mapName}.level", data, Encoding.UTF8);
     }
 }
@@ -30,23 +31,18 @@ public class MapInfoSerializer
     [DataMember] public Serializables.FallOffDirection fallOffDirection;
     [DataMember] public List<AttackerSelectionSerializer> attackerSelections;
     [DataMember] public int budget;
-
 }
 
 [DataContract]
 public class AttackerSelectionSerializer
 {
-    [DataMember]
-    public string attackerName;
-    
-    [DataMember]
-    public int damage;
-    
-    [DataMember]
-    public AttackerSelection.AttackerType attackerType;
+    [DataMember] public string attackerName;
 
-    [DataMember] 
-    public int numberOfAttacker;
+    [DataMember] public int damage;
+
+    [DataMember] public AttackerSelection.AttackerType attackerType;
+
+    [DataMember] public int numberOfAttacker;
 }
 
 public class Serializer
@@ -66,9 +62,8 @@ public class Serializer
         var ms = new MemoryStream();
         var ser = new DataContractJsonSerializer(typeof(TSerializer));
         ser.WriteObject(ms, data);
-        byte[] json = ms.ToArray();
+        var json = ms.ToArray();
         ms.Close();
         return Encoding.UTF8.GetString(json, 0, json.Length);
     }
 }
-

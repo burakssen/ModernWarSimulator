@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Defence2
   m_EditorClassIdentifier: 
   cost: 150
-  name: AAG
-  gameObject: {fileID: 3951121576996221447, guid: 8c59f553e2c7ff94da2ca318333cd09e, type: 3}
-  health: 1000
+  defenceName: AAG
+  gameObject: {fileID: 2389171113751842596, guid: 8c59f553e2c7ff94da2ca318333cd09e, type: 3}
+  health: 500
   damage: 10
   defenceType: 1

@@ -2,20 +2,21 @@
 using UnityEngine.UI;
 
 
-[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/DefenceSelectionCard", order = 3)]    
+[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/DefenceSelectionCard", order = 3)]
 public class DefenceSelection : ScriptableObject
 {
-        [SerializeField] public float cost;
-        [SerializeField] private string name;
-        [SerializeField] public GameObject gameObject;
-        [SerializeField] public float health;
-        public enum DefenceType
-        {
-                Homing,
-                Directional
-        };
+    [SerializeField] public float cost;
+    [SerializeField] public string defenceName;
+    [SerializeField] public GameObject gameObject;
+    [SerializeField] public float health;
 
-        [SerializeField] private float damage;
+    public enum DefenceType
+    {
+        Homing,
+        Directional
+    };
 
-        [SerializeField] public DefenceType defenceType;
+    [SerializeField] private float damage;
+
+    [SerializeField] public DefenceType defenceType;
 }

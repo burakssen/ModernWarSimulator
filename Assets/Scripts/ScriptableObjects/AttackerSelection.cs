@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class AttackerSelection : ScriptableObject
 {
     public Image image;
+
     public enum AttackerType
     {
         FreeFall,
@@ -12,7 +13,7 @@ public class AttackerSelection : ScriptableObject
     };
 
     public GameObject gameObject;
-    
+
     public string attackerName;
     public int damage;
     public AttackerType attackerType;

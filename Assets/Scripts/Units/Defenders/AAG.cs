@@ -7,8 +7,8 @@ public class AAG : BaseDefence
 {
     [SerializeField] private bool shoot = false;
     [SerializeField] private GameObject bullet;
-    [Range(0, 1)]
-    [SerializeField] private float projectileSpeed;
+    [Range(0, 1)] [SerializeField] private float projectileSpeed;
+    private float timeStamp;
 
     private Vector3 direction;
     private IEnumerator enumerator;
@@ -17,43 +17,47 @@ public class AAG : BaseDefence
     private void Start()
     {
         tiltRotate = GetComponent<TiltRotate>();
-        enumerator = Shoot();
     }
 
     public void Update()
+    {   
+        if (Global.gameState != Global.GameState.play)
+            return;
+
+
+        GetComponent<SphereCollider>().enabled = true;
+
+        if (!shoot || !currentTarget)
+            return;
+        
+        if (timeStamp <= Time.time)
+        {
+            StartCoroutine(Shoot());
+            timeStamp = Time.time + 4 * 0.2f;
+        }
+
+    }
+
+    public void FixedUpdate()
     {
-        if (!setTargets)
-            return;
-        
-        SetTargets(currentTarget);
-
-        
-        if (!shoot)
-            return;
-
-        
-        
-        
-        StartCoroutine(enumerator);
-        shoot = false;
-        setTargets = false;
+        direction = tiltRotate.GetDirection();
     }
 
     public override void SetTargets(GameObject target)
     {
         base.SetTargets(target);
         tiltRotate.SetCurrentTarget(target);
-        direction = tiltRotate.GetDirection();
+        shoot = true;
     }
-    
+
     public IEnumerator Shoot()
     {
         foreach (var spawnPoint in spawnPoints)
         {
             yield return new WaitForSeconds(0.2f);
 
-            GameObject b = Instantiate(bullet, spawnPoint.transform.position, Quaternion.identity);
-            b.GetComponent<Rigidbody>().AddForce(direction * (direction.magnitude * projectileSpeed), ForceMode.Force);
+            var b = Instantiate(bullet, spawnPoint.transform.position, Quaternion.identity);
+            b.GetComponent<Rigidbody>().AddForce(direction * (direction.magnitude * projectileSpeed * 10000), ForceMode.Force);
         }
     }
 }

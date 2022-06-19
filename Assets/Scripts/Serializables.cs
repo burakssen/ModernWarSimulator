@@ -7,26 +7,26 @@ using TMPro;
 
 public class Serializables : MonoBehaviour
 {
-    public enum DrawMode { ColorMap, Mesh, FallOff };
+    public enum DrawMode
+    {
+        ColorMap,
+        Mesh,
+        FallOff
+    };
 
     [DataContract(Name = "FallOffDirection")]
-    public enum FallOffDirection 
-    { 
-        [EnumMember] 
-        X,
-        [EnumMember] 
-        Y 
+    public enum FallOffDirection
+    {
+        [EnumMember] X,
+        [EnumMember] Y
     };
 
     [DataContract(Name = "FalloffType")]
     public enum FallOffType
     {
-        [EnumMember]
-        Island,
-        [EnumMember]
-        Coast,
-        [EnumMember]
-        Lake
+        [EnumMember] Island,
+        [EnumMember] Coast,
+        [EnumMember] Lake
     }
 
     [System.Serializable]
@@ -38,7 +38,8 @@ public class Serializables : MonoBehaviour
     }
 
     [System.Serializable]
-    public struct UIInputs{
+    public struct UIInputs
+    {
         public Slider size;
         public TMP_InputField seed;
         public TMP_InputField offsetX;
@@ -50,7 +51,8 @@ public class Serializables : MonoBehaviour
     }
 
     [System.Serializable]
-    public struct MapArgs{
+    public struct MapArgs
+    {
         public DrawMode drawMode;
         public int editorPreivewLevelOfDetail;
         public float noiseScale;
@@ -75,4 +77,3 @@ public class Serializables : MonoBehaviour
         }
     }
 }
-

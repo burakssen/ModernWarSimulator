@@ -1,1 +1,0 @@
-﻿{"attackerSelections":[{"attackerName":"FreeFall","attackerType":0,"damage":200,"numberOfAttacker":1},{"attackerName":"Directional","attackerType":1,"damage":300,"numberOfAttacker":2}],"budget":1000,"fallOffDirection":0,"fallOffRate":0,"fallOffType":0,"mapName":"Level-3","offSetX":0,"offSetY":0,"seed":0,"size":201,"useFallOff":false}

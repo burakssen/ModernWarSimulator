@@ -17,4 +17,4 @@ MonoBehaviour:
   attackerName: Directional
   damage: 300
   attackerType: 1
-  health: 1000
+  health: 500

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4168285134980724107}
   m_Layer: 0
   m_Name: FreeFall
-  m_TagString: Untagged
+  m_TagString: AttackerMissile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -115,4 +115,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   enable: 0
+  explosion: {fileID: 6091614349094040769, guid: 9866215efb511b941b6480a7acaf36bf, type: 3}
+  damage: 250
   currentVelocity: {x: 0, y: 0, z: 0}

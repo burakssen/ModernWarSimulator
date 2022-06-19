@@ -1,35 +1,40 @@
+using System;
 using UnityEngine;
 
 public abstract class BaseDefence : MonoBehaviour
 {
     [SerializeField] public GameObject[] spawnPoints;
-    [SerializeField] public bool setTargets = false;
     public float health = 100;
-    public float damage = 1000;
+    public float initialHealth;
 
     [SerializeField] public GameObject currentTarget;
+    [SerializeField] public GameObject healthBar;
+    private HealthBarHandler healthBarHandler;
+
+    [SerializeField] private GameObject explosion;
+    public void Awake()
+    {
+        healthBarHandler = healthBar.GetComponent<HealthBarHandler>();
+    }
+
     public virtual void SetTargets(GameObject target)
     {
         currentTarget = target;
     }
 
-    public virtual void Update()
+    public void SetValues(float health)
     {
-        if(health <= 0)
-            DestroyDefence();
-    }
-
-    public void SetValues(float damage, float health)
-    {
-        this.damage = damage;
         this.health = health;
+        this.initialHealth = health;
+        healthBarHandler.SetHealthBarValue(this.health);
     }
 
     public void DestroyDefence()
     {
+        Instantiate(explosion, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
-    
+
 
     public void OnCollisionEnter(Collision collision)
     {
@@ -38,7 +43,8 @@ public abstract class BaseDefence : MonoBehaviour
 
         health -= collision.transform.GetComponent<MissileBase>().GetDamage();
         collision.transform.GetComponent<MissileBase>().DestroyMissile();
-        if(health<=0)
+        healthBarHandler.SetHealthBarValue(health / initialHealth);
+        if (health <= 0)
             DestroyDefence();
     }
 
@@ -46,11 +52,13 @@ public abstract class BaseDefence : MonoBehaviour
     {
         if (other.GetType() != typeof(BoxCollider))
             return;
-        
-        if (other.transform.CompareTag("Attacker") && currentTarget == null)
+
+        if (other.transform.CompareTag("Attacker"))
         {
-            currentTarget = other.transform.gameObject;
-            setTargets = true;
+            if (currentTarget == null)
+                SetTargets(other.transform.gameObject);
+            else
+                SetTargets(currentTarget);
         }
     }
 }

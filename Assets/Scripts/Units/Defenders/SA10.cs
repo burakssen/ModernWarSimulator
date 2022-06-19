@@ -8,51 +8,77 @@ public class SA10 : BaseDefence
     private bool spawned = false;
     [SerializeField] public GameObject missile;
     public List<GameObject> missiles;
-   
-    public void Update()
-    {
-        if (Global.gameState == Global.GameState.play && !spawned)
-        {
-            foreach (var point in spawnPoints)
-            {
-                GameObject m = Instantiate(missile, point.transform.position, missile.transform.localRotation);
-                m.transform.SetParent(transform);
-                missiles.Add(m);
-            }
+    private bool setTargets = false;
+    private float timeStamp;
 
-            spawned = true;
-        }
-        
-        if (!currentTarget)
+    private void FixedUpdate()
+    {
+        if (Global.gameState != Global.GameState.play)
             return;
         
-        if(setTargets)
+        var missileNotExist = true;
+
+        if (timeStamp <= Time.time)
         {
-            SetTargets(currentTarget);
-            setTargets = false;
+            if (missiles.Count > 0)
+            {
+                foreach (var missile in missiles) missileNotExist = missileNotExist && missile;
+
+                setTargets = false;
+                if (missileNotExist == false) missiles.Clear();
+            }
+            else
+            {
+                missileNotExist = false;
+            }
+
+
+            if (!missileNotExist)
+            {
+                GetComponent<SphereCollider>().enabled = true;
+                var index = 0;
+                foreach (var point in spawnPoints)
+                {
+                    var m = Instantiate(missile, point.transform.position, transform.localRotation);
+                    m.transform.SetParent(spawnPoints[index].transform);
+                    missiles.Add(m);
+                    index++;
+                }
+
+                setTargets = true;
+            }
+
+            if (setTargets)
+                Set();
+            
+            timeStamp = Time.time + missiles.Count * 3 + 5f;
         }
     }
-    
-    public override void SetTargets(GameObject target)
+
+    public void Set()
     {
-        base.SetTargets(target);
         
-        int time = 3;
+
+        var time = 3;
         foreach (var missile in missiles)
         {
-            if(!missile)
+            if (!missile)
                 continue;
             StartCoroutine(SetTargetToMissile(missile, time));
             time += 3;
         }
     }
 
-    IEnumerator SetTargetToMissile(GameObject missile, float time)
+
+    public override void SetTargets(GameObject target)
     {
-        yield return new WaitForSeconds(time);
-        MissileBase missileBase = missile.GetComponent<MissileBase>();
-        missileBase.SetTarget(currentTarget);
-        missileBase.enable = true;
+        base.SetTargets(target);
     }
 
+    private IEnumerator SetTargetToMissile(GameObject missile, float time)
+    {
+        yield return new WaitForSeconds(time);
+        var missileBase = missile.GetComponent<MissileBase>();
+        missileBase.SetTarget(currentTarget);
+    }
 }

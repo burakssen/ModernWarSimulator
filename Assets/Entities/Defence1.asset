@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Defence1
   m_EditorClassIdentifier: 
   cost: 100
-  name: SA-10
+  defenceName: SA-10
   gameObject: {fileID: 3941829508909804411, guid: 08aa9d035969cda448def86ef7ee1ad6, type: 3}
   health: 1000
   damage: 100

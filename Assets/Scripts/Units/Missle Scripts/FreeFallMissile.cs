@@ -6,21 +6,19 @@ using UnityEngine;
 public class FreeFallMissile : MissileBase
 {
     private GameObject parent;
-    bool activate;
+    private bool activate;
     [SerializeField] private Vector3 currentVelocity;
-    private bool disable;
+
     public override void Start()
     {
         base.Start();
         parent = transform.parent.transform.parent.transform.parent.gameObject;
-        disable = false;
         activate = false;
-        Destroy(gameObject, 10f);
     }
-    
-    void FixedUpdate()
+
+    private void FixedUpdate()
     {
-        if (disable || !target)
+        if (!enable || !target)
             return;
 
         currentVelocity = parent.GetComponent<AttackerBase>().GetVelocity();
@@ -31,18 +29,15 @@ public class FreeFallMissile : MissileBase
             rigidbody.useGravity = true;
             rigidbody.isKinematic = false;
             rigidbody.velocity += currentVelocity * 2f;
-            disable = true;
+            enable = false;
             return;
         }
-        
-        Vector3 deltaPosition = transform.position - target.transform.position;
-        float time = Mathf.Sqrt(2 * deltaPosition.y / Physics.gravity.magnitude);
-        float timeNeeded = Mathf.Abs(deltaPosition.z / currentVelocity.z);
-        
-        if (Mathf.Abs(time - timeNeeded) < 1f)
-        {
-            activate = true;
-        }
+
+        var deltaPosition = transform.position - target.transform.position;
+        var time = Mathf.Sqrt(2 * deltaPosition.y / Physics.gravity.magnitude);
+        var timeNeeded = Mathf.Abs(deltaPosition.z / currentVelocity.z);
+
+        if (Mathf.Abs(time - timeNeeded) < 1f) activate = true;
     }
 
     public override void SetTarget(GameObject t)

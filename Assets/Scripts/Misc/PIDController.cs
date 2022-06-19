@@ -8,6 +8,7 @@ public class PIDController
     private float p, i, d;
     public float kp, ki, kd;
     private float prevError;
+
     public PIDController(float p, float i, float d)
     {
         kp = p;
@@ -21,6 +22,7 @@ public class PIDController
         ki = _i;
         kd = _d;
     }
+
     public float GetOutput(float currentError, float deltaTime)
     {
         p = currentError;

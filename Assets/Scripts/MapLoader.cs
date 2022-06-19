@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Application = UnityEngine.Device.Application;
 
-public class MapLoader : MonoBehaviour{
-    [SerializeField] Serializables.MapArgs mapArguments;
-    [SerializeField] GameObject planeParent;
+public class MapLoader : MonoBehaviour
+{
+    [SerializeField] private Serializables.MapArgs mapArguments;
+    [SerializeField] private GameObject planeParent;
     private GameObject[] _planes;
     private List<AttackerSelectionSerializer> attackerSelectionSerializers;
 
@@ -15,16 +16,16 @@ public class MapLoader : MonoBehaviour{
 
     private void Start()
     {
-        MapInfoSerializer mapInfoSerializer = GetMapData("Level-3");
-        MapGenerator mapGenerator = FindObjectOfType<MapGenerator>();
+        var mapInfoSerializer = GetMapData(PlayerPrefs.GetString("LevelName"));
+        var mapGenerator = FindObjectOfType<MapGenerator>();
         attackerSelectionSerializers = new List<AttackerSelectionSerializer>();
-        MapData[] mapDatas = mapGenerator.GenerateMapData(Vector2.zero, mapInfoSerializer, mapArguments);
+        var mapDatas = mapGenerator.GenerateMapData(Vector2.zero, mapInfoSerializer, mapArguments);
         Global.budget = mapInfoSerializer.budget;
         Global.mapSize = (mapInfoSerializer.size - 1) / 200f;
 
         foreach (var attacker in mapInfoSerializer.attackerSelections)
         {
-            AttackerSelectionSerializer attackerSelectionSerializer = new AttackerSelectionSerializer();
+            var attackerSelectionSerializer = new AttackerSelectionSerializer();
             attackerSelectionSerializer.damage = attacker.damage;
             attackerSelectionSerializer.attackerName = attacker.attackerName;
             attackerSelectionSerializer.attackerType = attacker.attackerType;
@@ -33,30 +34,28 @@ public class MapLoader : MonoBehaviour{
         }
 
         _planes = new GameObject[100];
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
+        for (var j = 0; j < 10; j++)
         {
-            for (int j = 0; j < 10; j++)
-            {
-                GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane); //Create GO and add necessary components
-                plane.transform.SetParent(planeParent.transform);
-                _planes[i * 10 + j] = plane;
-                Tile tile = plane.AddComponent<Tile>();
-            }
+            var plane = GameObject.CreatePrimitive(PrimitiveType.Plane); //Create GO and add necessary components
+            plane.transform.SetParent(planeParent.transform);
+            _planes[i * 10 + j] = plane;
+            var tile = plane.AddComponent<Tile>();
+            tile.index = new Vector2(i, j);
+            plane.tag = "Plane";
         }
-        
+
         mapGenerator.DrawMeshMap(mapDatas, FindObjectOfType<MapDisplay>(), mapInfoSerializer, mapArguments, _planes);
-        
-        for (int i = 0; i < 10; i++)
+
+        for (var i = 0; i < 10; i++)
+        for (var j = 0; j < 10; j++)
         {
-            for (int j = 0; j < 10; j++)
-            {
-                GameObject plane = _planes[i * 10 + j];
-                Mesh planeMesh = plane.GetComponent<MeshFilter>().mesh;
-                Bounds bounds = planeMesh.bounds;
-                float width = plane.transform.localScale.x * bounds.size.x;
-                float height = plane.transform.localScale.z * bounds.size.z;
-                plane.transform.localPosition = new Vector3(100 -i * width, 0f, j * height);
-            }
+            var plane = _planes[i * 10 + j];
+            var planeMesh = plane.GetComponent<MeshFilter>().mesh;
+            var bounds = planeMesh.bounds;
+            var width = plane.transform.localScale.x * bounds.size.x;
+            var height = plane.transform.localScale.z * bounds.size.z;
+            plane.transform.localPosition = new Vector3(100 - i * width, 0f, j * height);
         }
     }
 
@@ -71,24 +70,19 @@ public class MapLoader : MonoBehaviour{
 
     private MapInfoSerializer GetMapData(string mapName)
     {
-        string map = File.ReadAllText(Application.dataPath + $"/Maps/{mapName}.level");
+        var map = File.ReadAllText(Application.dataPath + $"/Maps/{mapName}.level");
         return Serializer.DeserializeFromString<MapInfoSerializer>(map);
     }
 
     public void SetSpawnObject()
     {
-        foreach (var plane in _planes)
-        {
-            plane.GetComponent<Tile>().objectToPlace = Global.spawnObject;
-        }
+        foreach (var plane in _planes) plane.GetComponent<Tile>().objectToPlace = Global.spawnObject;
     }
-    private void ClearAll()
+
+    public void ClearAll()
     {
         Global.gameState = Global.GameState.play;
-        foreach (var plane in _planes)
-        {
-            plane.GetComponent<Tile>().Clear();
-        }
+        foreach (var plane in _planes) plane.GetComponent<Tile>().Clear();
     }
 
     public List<AttackerSelectionSerializer> GetAttackerSelectionSerializers()

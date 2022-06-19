@@ -12,19 +12,30 @@ public class PlacerController : MonoBehaviour
     [SerializeField] private GameObject buttonParent;
     [SerializeField] private TMP_Text budget;
     [SerializeField] private Button playButton;
-    void Start()
+    [SerializeField] private DefenceSelection baseSelection;
+    [SerializeField] private GameObject canvas;
+    [SerializeField] private GameObject button;
+
+    private void Start()
     {
+        var baseSel = Instantiate(selectionButton, buttonParent.transform);
+        var btn = baseSel.transform.GetChild(0).GetComponent<Button>();
+        var txt = baseSel.transform.GetChild(1).GetComponent<TMP_Text>();
+        txt.text = baseSelection.cost.ToString();
+        btn.GetComponentInChildren<TMP_Text>().SetText("      " + baseSelection.defenceName);
+        btn.onClick.AddListener(delegate { SelectObject(baseSelection.defenceName, true); });
+
         foreach (var defence in defenceSelections)
         {
-            GameObject newButtonObject = Instantiate(selectionButton, buttonParent.transform);
-            Button button = newButtonObject.transform.GetChild(0).GetComponent<Button>();
-            TMP_Text text = newButtonObject.transform.GetChild(1).GetComponent<TMP_Text>();
+            var newButtonObject = Instantiate(selectionButton, buttonParent.transform);
+            var button = newButtonObject.transform.GetChild(0).GetComponent<Button>();
+            var text = newButtonObject.transform.GetChild(1).GetComponent<TMP_Text>();
             text.text = defence.cost.ToString();
-            button.GetComponentInChildren<TMP_Text>().SetText("      "+defence.name);
-            button.onClick.AddListener(delegate { SelectObject(defence.name); });
+            button.GetComponentInChildren<TMP_Text>().SetText("      " + defence.defenceName);
+            button.onClick.AddListener(delegate { SelectObject(defence.defenceName); });
         }
 
-        Button playB = Instantiate(playButton, buttonParent.transform);
+        var playB = Instantiate(playButton, buttonParent.transform);
         playB.GetComponentInChildren<TMP_Text>().text = "Play";
         playB.onClick.AddListener(ActivatePlay);
     }
@@ -34,14 +45,19 @@ public class PlacerController : MonoBehaviour
         budget.text = "Budget: " + Global.budget;
     }
 
-    void SelectObject(string name)
+    private void SelectObject(string name, bool isBase = false)
     {
-        DefenceSelection defenceSelection = defenceSelections.Find(selection =>
+        if (isBase)
         {
-            if (selection.name == name)
-            {
-                return true;
-            }
+            Global.selectedDefence = baseSelection;
+            Global.spawnObject = baseSelection.gameObject;
+            FindObjectOfType<MapLoader>().SetSpawnObject();
+            return;
+        }
+
+        var defenceSelection = defenceSelections.Find(selection =>
+        {
+            if (selection.defenceName == name) return true;
 
             return false;
         });
@@ -50,8 +66,12 @@ public class PlacerController : MonoBehaviour
         FindObjectOfType<MapLoader>().SetSpawnObject();
     }
 
-    void ActivatePlay()
+    private void ActivatePlay()
     {
+        FindObjectOfType<MapLoader>().ClearAll();
         Global.gameState = Global.GameState.play;
+        button.SetActive(true);
+        FindObjectOfType<AttackerSpawner>().spawn = true;
+        canvas.SetActive(false);
     }
 }

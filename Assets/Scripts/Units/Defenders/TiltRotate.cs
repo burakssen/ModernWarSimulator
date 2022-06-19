@@ -24,15 +24,15 @@ public class TiltRotate : MonoBehaviour
     {
         if (!currentTarget)
             return;
-        
+
         direction = currentTarget.transform.position - transform.position;
         tiltAngle = Mathf.Atan2(direction.y, direction.z) * Mathf.Rad2Deg;
         rotateAngle = 90f - Mathf.Atan2(direction.z, direction.x) * Mathf.Rad2Deg;
-        
-        if(tiltable)
+
+        if (tiltable)
             Tilt();
-        
-        if(rotatable)
+
+        if (rotatable)
             Rotate();
     }
 
@@ -45,21 +45,18 @@ public class TiltRotate : MonoBehaviour
     {
         return direction;
     }
-    
+
 
     public void Tilt()
     {
-
-        if (Math.Abs(Mathf.RoundToInt(currentTiltAngle) - Mathf.RoundToInt(tiltAngle)) < 2 || tiltAngle < 0 || tiltAngle > 85)
+        if (Math.Abs(Mathf.RoundToInt(currentTiltAngle) - Mathf.RoundToInt(tiltAngle)) < 2 || tiltAngle < 0 ||
+            tiltAngle > 85)
             return;
-        
-        float lAngle = Speed * Time.deltaTime;
 
-        if (currentTiltAngle > tiltAngle)
-        {
-            lAngle = -lAngle;
-        }
-        
+        var lAngle = Speed * Time.deltaTime;
+
+        if (currentTiltAngle > tiltAngle) lAngle = -lAngle;
+
         tilt.transform.RotateAround(tiltPoint.transform.position, -tiltPoint.transform.right, lAngle);
         currentTiltAngle += lAngle;
     }
@@ -68,15 +65,12 @@ public class TiltRotate : MonoBehaviour
     {
         if (Math.Abs(Mathf.RoundToInt(currentRotateAngle) - Mathf.RoundToInt(rotateAngle)) < 2)
             return;
-        
-        float rAngle = Speed * Time.deltaTime;
 
-        if (currentRotateAngle > rotateAngle)
-        {
-            rAngle = -rAngle;
-        }
-        
+        var rAngle = Speed * Time.deltaTime;
+
+        if (currentRotateAngle > rotateAngle) rAngle = -rAngle;
+
         rotate.transform.RotateAround(rotatePoint.transform.position, tiltPoint.transform.up, rAngle);
         currentRotateAngle += rAngle;
-    }   
+    }
 }

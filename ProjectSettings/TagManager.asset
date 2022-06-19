@@ -9,6 +9,12 @@ TagManager:
   - Image
   - AttackerCount
   - waypoint
+  - Defence
+  - Attacker
+  - DefenceMissile
+  - AttackerMissile
+  - Base
+  - Plane
   layers:
   - Default
   - TransparentFX

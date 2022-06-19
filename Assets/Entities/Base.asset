@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1c0d8cef0da4441b9bef8e5b18c5d24, type: 3}
+  m_Name: Base
+  m_EditorClassIdentifier: 
+  cost: 0
+  defenceName: Base
+  gameObject: {fileID: 8535522078549662117, guid: 813c014d32b047545818da0d458ee75d, type: 3}
+  health: 2000
+  damage: 0
+  defenceType: 0
