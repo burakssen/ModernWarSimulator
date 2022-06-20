@@ -96,7 +96,7 @@ public class MoveOnPaths : MonoBehaviour
             foreach (var path in rightSide[val].paths) paths.Add(path);
         }
     }
-
+    
     private Vector3 MultiplyOnXZ(Vector3 vector, float val)
     {
         return new Vector3(vector.x * val, vector.y, vector.z * val);

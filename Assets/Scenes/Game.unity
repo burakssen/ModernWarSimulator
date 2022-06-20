@@ -1376,8 +1376,9 @@ MonoBehaviour:
   budget: {fileID: 6629840293983352464}
   playButton: {fileID: 7477327082627254882, guid: d40e81842dc48ab4eb52fd6b736e531b, type: 3}
   baseSelection: {fileID: 11400000, guid: b1226e73a88fbef4381ac296078c5aad, type: 2}
-  canvas: {fileID: 1917041458}
-  button: {fileID: 0}
+  scroll: {fileID: 1088519145}
+  button: {fileID: 299900548}
+  placerController: {fileID: 2071155428}
 --- !u!1 &2095966301
 GameObject:
   m_ObjectHideFlags: 0

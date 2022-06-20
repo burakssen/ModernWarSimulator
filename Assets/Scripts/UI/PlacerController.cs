@@ -13,8 +13,9 @@ public class PlacerController : MonoBehaviour
     [SerializeField] private TMP_Text budget;
     [SerializeField] private Button playButton;
     [SerializeField] private DefenceSelection baseSelection;
-    [SerializeField] private GameObject canvas;
+    [SerializeField] private GameObject scroll;
     [SerializeField] private GameObject button;
+    [SerializeField] private GameObject placerController;
 
     private void Start()
     {
@@ -72,6 +73,7 @@ public class PlacerController : MonoBehaviour
         Global.gameState = Global.GameState.play;
         button.SetActive(true);
         FindObjectOfType<AttackerSpawner>().spawn = true;
-        canvas.SetActive(false);
+        scroll.SetActive(false);
+        placerController.SetActive(false);
     }
 }

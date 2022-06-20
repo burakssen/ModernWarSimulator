@@ -57,7 +57,7 @@ public class AAG : BaseDefence
             yield return new WaitForSeconds(0.2f);
 
             var b = Instantiate(bullet, spawnPoint.transform.position, Quaternion.identity);
-            b.GetComponent<Rigidbody>().AddForce(direction * (direction.magnitude * projectileSpeed * 10000), ForceMode.Force);
+            b.GetComponent<Rigidbody>().AddForce(direction * (direction.magnitude * projectileSpeed), ForceMode.Force);
         }
     }
 }
