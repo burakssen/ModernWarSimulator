@@ -141,6 +141,10 @@ public class MapGeneratorController : MonoBehaviour
 
         var mapSerializer = new MapSerializer();
         mapSerializer.mapInfoSerializer = mapInfoSerializer;
+        
+        if (!Directory.Exists(Application.dataPath + "/Maps/"))
+            Directory.CreateDirectory(Application.dataPath + "/Maps/");
+        
         mapSerializer.Serialize(Application.dataPath + "/Maps/");
     }
 }

@@ -21,5 +21,7 @@ public class WinLoseSceneController : MonoBehaviour
             message.text = "You have lost.";
             point.text = "";
         }
+
+        Global.gameState = Global.GameState.edit;
     }
 }

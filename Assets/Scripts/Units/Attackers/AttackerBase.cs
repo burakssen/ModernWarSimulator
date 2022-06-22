@@ -65,7 +65,8 @@ public class AttackerBase : MonoBehaviour
         Global.point += point;
         if (Global.attackerNumber <= 0)
             Global.gameState = Global.GameState.won;
-        Instantiate(explosion, transform.position, Quaternion.identity);
+        GameObject exp = Instantiate(explosion, transform.position, Quaternion.identity);
+        Destroy(exp, 2f);
         Destroy(gameObject);
     }
 

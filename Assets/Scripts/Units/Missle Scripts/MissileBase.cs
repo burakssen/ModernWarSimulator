@@ -8,7 +8,6 @@ public class MissileBase : MonoBehaviour
     [SerializeField] private GameObject explosion;
     protected new Rigidbody rigidbody;
     public float damage = 100f;
-
     public virtual void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
@@ -16,6 +15,7 @@ public class MissileBase : MonoBehaviour
 
     public void Update()
     {
+        
         SetTarget(target);
     }
 
@@ -32,8 +32,11 @@ public class MissileBase : MonoBehaviour
 
     public void DestroyMissile(float time = 0f)
     {
-        if(time == 0)
-            Instantiate(explosion, transform.position, Quaternion.identity);
+        if (time == 0)
+        {
+            GameObject exp = Instantiate(explosion, transform.position, Quaternion.identity);
+            Destroy(exp, 1f);
+        }
         Destroy(gameObject, time);
     }
 

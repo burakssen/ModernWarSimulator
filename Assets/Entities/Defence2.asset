@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1c0d8cef0da4441b9bef8e5b18c5d24, type: 3}
   m_Name: Defence2
   m_EditorClassIdentifier: 
-  cost: 150
+  cost: 300
   defenceName: AAG
   gameObject: {fileID: 2389171113751842596, guid: 8c59f553e2c7ff94da2ca318333cd09e, type: 3}
   health: 500

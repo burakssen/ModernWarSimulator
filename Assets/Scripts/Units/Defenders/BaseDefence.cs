@@ -31,7 +31,8 @@ public abstract class BaseDefence : MonoBehaviour
 
     public void DestroyDefence()
     {
-        Instantiate(explosion, transform.position, Quaternion.identity);
+        GameObject exp = Instantiate(explosion, transform.position, Quaternion.identity);
+        Destroy(exp, 2f);
         Destroy(gameObject);
     }
 
@@ -58,7 +59,14 @@ public abstract class BaseDefence : MonoBehaviour
             if (currentTarget == null)
                 SetTargets(other.transform.gameObject);
             else
-                SetTargets(currentTarget);
+            {
+                if((transform.position - currentTarget.transform.position).magnitude < 50)
+                    SetTargets(currentTarget);
+                else
+                {
+                    SetTargets(other.transform.gameObject);
+                }
+            }
         }
     }
 }

@@ -59,6 +59,7 @@ public class MoveOnPaths : MonoBehaviour
         {
             pathNum = 0;
             paths.Clear();
+            transform.GetComponent<Rigidbody>().velocity = Vector3.zero;
             ChooseRandomPath();
         }
 

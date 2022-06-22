@@ -5282,7 +5282,7 @@ MonoBehaviour:
   explosion: {fileID: 6091614349094040769, guid: 9866215efb511b941b6480a7acaf36bf, type: 3}
   damage: 100
   thrust: 6000
-  maxAngularVelocity: 1000
+  maxAngularVelocity: 100
   xP: 0.25
   xI: 0.5
   xD: 0.3
